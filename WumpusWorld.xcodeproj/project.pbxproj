@@ -7,24 +7,44 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C30325C01C7A67F400A7C8CC /* wumpus_2.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = C30325BF1C7A679100A7C8CC /* wumpus_2.txt */; };
+		C30325C31C7A80C900A7C8CC /* GreedyWumpusWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C30325C11C7A80C900A7C8CC /* GreedyWumpusWorld.cpp */; };
+		C33BBCC11C7BD96400863E22 /* CLIWumpusWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C33BBCBF1C7BD96400863E22 /* CLIWumpusWorld.cpp */; };
+		C3628D751C668D380033E9A1 /* WumpusWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3628D731C668D380033E9A1 /* WumpusWorld.cpp */; };
 		C3A5DB881C5E9AE40001FA22 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A5DB871C5E9AE40001FA22 /* main.cpp */; };
+		C3A5DBA91C5F0DE70001FA22 /* wumpus_1.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3A5DBA81C5F0DCA0001FA22 /* wumpus_1.txt */; };
+		C3C63D8F1C7D165400E55C9C /* AStarWumpusWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3C63D8D1C7D165400E55C9C /* AStarWumpusWorld.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		C3A5DB821C5E9AE40001FA22 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
 			files = (
+				C30325C01C7A67F400A7C8CC /* wumpus_2.txt in CopyFiles */,
+				C3A5DBA91C5F0DE70001FA22 /* wumpus_1.txt in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C30325BF1C7A679100A7C8CC /* wumpus_2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wumpus_2.txt; sourceTree = "<group>"; };
+		C30325C11C7A80C900A7C8CC /* GreedyWumpusWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GreedyWumpusWorld.cpp; sourceTree = "<group>"; };
+		C30325C21C7A80C900A7C8CC /* GreedyWumpusWorld.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GreedyWumpusWorld.hpp; sourceTree = "<group>"; };
+		C33BBCBF1C7BD96400863E22 /* CLIWumpusWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CLIWumpusWorld.cpp; sourceTree = "<group>"; };
+		C33BBCC01C7BD96400863E22 /* CLIWumpusWorld.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CLIWumpusWorld.hpp; sourceTree = "<group>"; };
+		C3628D731C668D380033E9A1 /* WumpusWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WumpusWorld.cpp; sourceTree = "<group>"; };
+		C3628D741C668D380033E9A1 /* WumpusWorld.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = WumpusWorld.hpp; sourceTree = "<group>"; };
+		C362C8841C605CFB000E3FBA /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; };
+		C362C8861C605D0C000E3FBA /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		C3A5DB841C5E9AE40001FA22 /* WumpusWorld */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WumpusWorld; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3A5DB871C5E9AE40001FA22 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		C3A5DBA81C5F0DCA0001FA22 /* wumpus_1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wumpus_1.txt; sourceTree = "<group>"; };
+		C3C63D8D1C7D165400E55C9C /* AStarWumpusWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AStarWumpusWorld.cpp; sourceTree = "<group>"; };
+		C3C63D8E1C7D165400E55C9C /* AStarWumpusWorld.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AStarWumpusWorld.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +77,18 @@
 		C3A5DB861C5E9AE40001FA22 /* WumpusWorld */ = {
 			isa = PBXGroup;
 			children = (
+				C3C63D8D1C7D165400E55C9C /* AStarWumpusWorld.cpp */,
+				C3C63D8E1C7D165400E55C9C /* AStarWumpusWorld.hpp */,
+				C30325C11C7A80C900A7C8CC /* GreedyWumpusWorld.cpp */,
+				C30325C21C7A80C900A7C8CC /* GreedyWumpusWorld.hpp */,
+				C33BBCBF1C7BD96400863E22 /* CLIWumpusWorld.cpp */,
+				C33BBCC01C7BD96400863E22 /* CLIWumpusWorld.hpp */,
+				C3628D731C668D380033E9A1 /* WumpusWorld.cpp */,
+				C3628D741C668D380033E9A1 /* WumpusWorld.hpp */,
+				C30325BF1C7A679100A7C8CC /* wumpus_2.txt */,
+				C3A5DBA81C5F0DCA0001FA22 /* wumpus_1.txt */,
+				C362C8841C605CFB000E3FBA /* makefile */,
+				C362C8861C605D0C000E3FBA /* README.txt */,
 				C3A5DB871C5E9AE40001FA22 /* main.cpp */,
 			);
 			path = WumpusWorld;
@@ -118,7 +150,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C33BBCC11C7BD96400863E22 /* CLIWumpusWorld.cpp in Sources */,
 				C3A5DB881C5E9AE40001FA22 /* main.cpp in Sources */,
+				C3C63D8F1C7D165400E55C9C /* AStarWumpusWorld.cpp in Sources */,
+				C3628D751C668D380033E9A1 /* WumpusWorld.cpp in Sources */,
+				C30325C31C7A80C900A7C8CC /* GreedyWumpusWorld.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +273,7 @@
 				C3A5DB8D1C5E9AE40001FA22 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

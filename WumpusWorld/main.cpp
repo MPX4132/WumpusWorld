@@ -7,9 +7,18 @@
 //
 
 #include <iostream>
+#include <fstream>
+#include "GreedyWumpusWorld.hpp"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+    std::fstream file((argc > 1)? argv[1] : "wumpus_2.txt");
+    
+    WumpusWorld::Player player1;
+    
+    GreedyWumpusWorld world((WumpusWorld::Configuration(file)));
+    world.run();
+    
+    std::cout << "Thank you for playing!" << std::endl;
+    
     return 0;
 }
