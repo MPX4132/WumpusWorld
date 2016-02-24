@@ -32,7 +32,7 @@ public:
     friend std::istream& operator>>(std::istream &is, CLIWumpusWorld& wumpusWorld);
     friend std::ostream& operator<<(std::ostream &os, CLIWumpusWorld const &wumpusWorld);
     
-    virtual int score() const;
+//    virtual int score() const;
     
     virtual void run(); // Run the game loop (ends upon not playable)
     
@@ -42,13 +42,13 @@ public:
     
 protected:
     virtual void get(ChamberContent &chamberContent) const;
-    virtual void getPlayerOn(ChamberContent &chamberContent) const;
+    virtual void getPlayersOn(ChamberContent &chamberContent) const;
     virtual std::string getRowSeparator() const;
     virtual std::string getRowSpacer() const;
     virtual std::string getHeadsUpDisplay() const;
     virtual std::string getHeadsUpDisplayBorder() const;
     virtual std::string getResults() const;
-    virtual int getFinalScore() const;
+    virtual std::vector<int> getFinalScores() const;
 };
 
 #endif /* CLIWumpusWorld_hpp */

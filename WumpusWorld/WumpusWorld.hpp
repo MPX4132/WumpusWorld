@@ -184,19 +184,42 @@ public:
 	// of performing within the world.
     class Player {
     public:
-
-        static int const DefaultActionCost = 1;
         
         enum Side {
             Left,
             Right
         };
         
+        class Configuration {
+        public:
+            static int const DefaultActionCost  = 1;
+            static int const DefaultSpace       = 1;
+            
+            
+            std::string identification; // A string used to identify the player.
+            int space;                  // The inventory limit space.
+            int turnCost;               // Cost for making the player change orientation by 45 degrees.
+            int cost;                   // A generic cost value applied to every other action.
+            
+            Orientation orientation;    // The heading the player faces in the world.
+            int location;               // A location in the world.
+            
+            Configuration(std::string const identification = "",
+                          Orientation const orientation = Orientation::North,
+                          int const cost = DefaultActionCost,
+                          int const space = DefaultSpace,
+                          int const turnCost = DefaultActionCost,
+                          int const location = 0
+                          );
+        };
         
         friend std::istream& operator>>(std::istream& is, Player &player);
         friend std::ostream& operator<<(std::ostream& os, Player const &player);
         
         static std::string Sensory(Chamber::Percept percept);
+        
+        
+        std::string identification() const;
         Chamber::Percept sense() const;
         
         Inventory inventory() const;
@@ -206,6 +229,7 @@ public:
         int location() const;
         
         Orientation orientation() const;
+        void orient(Orientation const orientation);
         Orientation turn(Side const side);
         
         void forward();
@@ -218,6 +242,8 @@ public:
         
         void climb();
         
+        Configuration configuration() const;
+        
         Chamber* chamber() const;
         
         bool inChamber() const;
@@ -227,15 +253,15 @@ public:
         
         bool finished() const;
         
+        virtual Configuration nextMove();
         
-        
-        Player(Orientation const orientation = North, int carryLimit = 1);
+        Player(Configuration const configuration = Configuration());
         ~Player();
         
         
     protected:
+        Configuration _configuration;
         
-        Orientation _orientation;
         Inventory _inventory;
         Chamber* _chamber;
         Item _dropped;
@@ -257,16 +283,18 @@ public:
         int _addPoints(int const points);
         void _clearPercepts();
         
-        bool _prepareForActionWithCost(int const tax = DefaultActionCost);
+        bool _prepareForActionWithCost(int const tax = Configuration::DefaultActionCost);
     };
-    
-    Player player;
     
     Chamber* passage(Chamber const *chamber, Orientation const orientation) const;
     
     Chamber& chamber(int i) const;
     
     virtual bool playable() const; // Checks if the game is not over
+    
+    void addPlayer(Player * const player);
+    
+    int size() const;
     
     WumpusWorld(Configuration const configuration);
     WumpusWorld(int size);
@@ -280,14 +308,17 @@ protected:
     static Edge const Bottom    = 4;
     static Edge const Left      = 8;
     
+    Orientation _defaultOrientation;
+    int _defaultChamber;
+    
+    std::vector<Player*> _player;
     std::vector<Chamber*> _chamber;
     
-    int size() const;
+    int _locate(Chamber const *chamber) const;
+    Edge _edge(int const position) const;
     
-    int locate(Chamber const *chamber) const;
-    Edge edge(int const position) const;
-    
-    virtual void takeTurn();
+    virtual void _processRound();
+    virtual void _process(Player * const player);
 };
 
 #endif

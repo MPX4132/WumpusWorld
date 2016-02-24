@@ -280,7 +280,7 @@ WumpusWorld::Chamber* WumpusWorld::Chamber::passage(WumpusWorld::Orientation con
 
 int WumpusWorld::Chamber::location() const
 {
-    return _world->locate(this);
+    return _world->_locate(this);
 }
 
 float WumpusWorld::Chamber::distanceTo(WumpusWorld::Chamber const *chamber) const
@@ -373,6 +373,25 @@ inventory(10), _features(features), _world(world)
 WumpusWorld::Chamber::~Chamber()
 {}
 
+
+// ================================================================
+#pragma mark - Player Configuration Implementation
+// ================================================================
+WumpusWorld::Player::Configuration::Configuration(std::string const identification,
+                                                  Orientation const orientation,
+                                                  int const cost,
+                                                  int const space,
+                                                  int const turnCost,
+                                                  int const location
+                                                  ):
+identification(identification),
+orientation(orientation),
+cost(cost),
+space(space),
+turnCost(turnCost),
+location(location)
+{
+}
 
 
 // ================================================================
@@ -471,6 +490,11 @@ std::string WumpusWorld::Player::Sensory(WumpusWorld::Chamber::Percept percept)
     return output;
 }
 
+std::string WumpusWorld::Player::identification() const
+{
+    return _configuration.identification;
+}
+
 WumpusWorld::Chamber::Percept WumpusWorld::Player::sense() const
 {
     WumpusWorld::Chamber::Percept bump = _bump? WumpusWorld::Chamber::Bump : WumpusWorld::Chamber::Nothing;
@@ -496,22 +520,22 @@ int WumpusWorld::Player::location() const
 
 WumpusWorld::Orientation WumpusWorld::Player::orientation() const
 {
-    return _orientation;
+    return _configuration.orientation;
 }
 
 WumpusWorld::Orientation WumpusWorld::Player::turn(WumpusWorld::Player::Side const side)
 {
     // If can't afford action, skip it
-    if (!_prepareForActionWithCost())
+    if (!_prepareForActionWithCost(_configuration.turnCost))
         return orientation();
     
     // If left, decrement by 1, if right, increment by 1
     switch (side) {
         case Left:
-            _orientation = orientation() != North? static_cast<WumpusWorld::Orientation>((_orientation-1) % (NorthWest+1)) : NorthWest;
+            _configuration.orientation = orientation() != North? static_cast<WumpusWorld::Orientation>((orientation()-1) % (NorthWest+1)) : NorthWest;
             break;
         case Right:
-            _orientation = orientation() != NorthWest? static_cast<WumpusWorld::Orientation>((_orientation+1) % (NorthWest+1)) : North;
+            _configuration.orientation = orientation() != NorthWest? static_cast<WumpusWorld::Orientation>((orientation()+1) % (NorthWest+1)) : North;
             break;
             
         default:
@@ -527,7 +551,7 @@ void WumpusWorld::Player::forward()
     // If can't afford action, skip it
     if (!_prepareForActionWithCost()) return;
     
-    _bump = !enter(_chamber->passage(_orientation));
+    _bump = !enter(_chamber->passage(orientation()));
 }
 
 void WumpusWorld::Player::shoot()
@@ -544,7 +568,7 @@ void WumpusWorld::Player::shoot()
     if (!_ammo) return;
     _ammo -= 1;
     
-    for (WumpusWorld::Chamber* chamber = _chamber->passage(_orientation); chamber; chamber = chamber->passage(_orientation)) {
+    for (WumpusWorld::Chamber* chamber = _chamber->passage(orientation()); chamber; chamber = chamber->passage(orientation())) {
         if ((_scream = chamber->hit())) break;
     }
 }
@@ -596,6 +620,12 @@ void WumpusWorld::Player::climb()
     }
 }
 
+void WumpusWorld::Player::orient(Orientation const orientation)
+{
+    _prepareForActionWithCost((orientation - this->orientation()));
+    _configuration.orientation = orientation;
+}
+
 WumpusWorld::Chamber *WumpusWorld::Player::chamber() const
 {
     return _chamber;
@@ -629,6 +659,12 @@ bool WumpusWorld::Player::alive() const
 bool WumpusWorld::Player::finished() const
 {
     return !alive() || !inChamber() || _finished;
+}
+
+WumpusWorld::Player::Configuration WumpusWorld::Player::nextMove()
+{
+    std::cin >> *this;
+    return _configuration;
 }
 
 int WumpusWorld::Player::_damage(int const damage)
@@ -675,9 +711,9 @@ bool WumpusWorld::Player::_prepareForActionWithCost(int const tax)
     return true;
 }
 
-WumpusWorld::Player::Player(WumpusWorld::Orientation const orientation, int carryLimit):
-_orientation(orientation),
-_inventory(carryLimit),
+WumpusWorld::Player::Player(WumpusWorld::Player::Configuration const configuration):
+_configuration(configuration),
+_inventory(configuration.space),
 _finished(false),
 _chamber(nullptr),
 _dropped(Air),
@@ -702,48 +738,48 @@ WumpusWorld::Player::~Player()
 // ================================================================
 WumpusWorld::Chamber* WumpusWorld::passage(WumpusWorld::Chamber const* chamber, WumpusWorld::Orientation const orientation) const
 {
-    int position = locate(chamber);
+    int position = _locate(chamber);
     int location = -1;
     
     
     switch (orientation) {
         case North:
-            if (!(edge(position) & Top))
+            if (!(_edge(position) & Top))
                 location = position - size();
             break;
             
         case NorthEast:
-            if (!(edge(position) & (Top | Right)))
+            if (!(_edge(position) & (Top | Right)))
                 location = position - size() + 1;
             break;
             
         case East:
-            if (!(edge(position) & Right))
+            if (!(_edge(position) & Right))
                 location = position + 1;
             break;
             
         case SouthEast:
-            if (!(edge(position) & (Bottom | Right)))
+            if (!(_edge(position) & (Bottom | Right)))
                 location = position + size() + 1;
             break;
             
         case South:
-            if (!(edge(position) & Bottom))
+            if (!(_edge(position) & Bottom))
                 location = position + size();
             break;
             
         case SouthWest:
-            if (!(edge(position) & (Bottom | Left)))
+            if (!(_edge(position) & (Bottom | Left)))
                 location = position + size() - 1;
             break;
             
         case West:
-            if (!(edge(position) & Left))
+            if (!(_edge(position) & Left))
                 location = position - 1;
             break;
             
         case NorthWest:
-            if (!(edge(position) & (Top | Left)))
+            if (!(_edge(position) & (Top | Left)))
                 location = position - size() - 1;
             break;
             
@@ -752,7 +788,7 @@ WumpusWorld::Chamber* WumpusWorld::passage(WumpusWorld::Chamber const* chamber, 
     }
     
     
-    if (location < 0 || location >= (size() * size())) return nullptr;
+    if (location < 0 || location >= std::pow(size(), 2)) return nullptr;
     
     return _chamber[location];
 }
@@ -766,7 +802,21 @@ WumpusWorld::Chamber& WumpusWorld::chamber(int i) const
 
 bool WumpusWorld::playable() const
 {
-    return !player.finished();
+    // If at least one player can play, then keep the world turning!
+    for (WumpusWorld::Player const * const aPlayer : _player) {
+        if (!aPlayer->finished()) return true;
+    }
+    return false;
+}
+
+void WumpusWorld::addPlayer(Player * const player)
+{
+    _player.push_back(player);
+    
+    // Note: The player must be oriented BEFORE entering the world,
+    // otherwise his actions will begin to count against him/her.
+    player->orient(_defaultOrientation);
+    player->enter(_chamber[_defaultChamber]);
 }
 
 int WumpusWorld::size() const
@@ -774,7 +824,7 @@ int WumpusWorld::size() const
     return std::sqrt(_chamber.size());
 }
 
-int WumpusWorld::locate(Chamber const *chamber) const
+int WumpusWorld::_locate(Chamber const *chamber) const
 {
     // Find the position of the chamber (can use pointer arithmetic, but simplifiy it for now)
     for (int i = 0; i < _chamber.size(); i++) {
@@ -784,7 +834,7 @@ int WumpusWorld::locate(Chamber const *chamber) const
     return -1;
 }
 
-WumpusWorld::Edge WumpusWorld::edge(int const position) const
+WumpusWorld::Edge WumpusWorld::_edge(int const position) const
 {
     Edge edge = 0;
     
@@ -803,14 +853,22 @@ WumpusWorld::Edge WumpusWorld::edge(int const position) const
     return edge;
 }
 
-void WumpusWorld::takeTurn() {
-    std::cin >> player;
+void WumpusWorld::_processRound() {
+    for (int i = 0; i < _player.size(); i++) {
+        if (!_player[i]->finished()) _process(_player[i]);
+    }
+}
+
+void WumpusWorld::_process(WumpusWorld::Player * const player)
+{
+    player->nextMove();
 }
 
 WumpusWorld::WumpusWorld(WumpusWorld::Configuration const configuration):
-player(configuration.orientation)
+_defaultOrientation(WumpusWorld::Orientation::North),
+_defaultChamber(0)
 {
-    std::vector<WumpusWorld::Chamber::Feature> feature(configuration.size * configuration.size);
+    std::vector<WumpusWorld::Chamber::Feature> feature(std::pow(configuration.size, 2));
     
     feature[configuration.entry]    = WumpusWorld::Chamber::Feature::Exit;
     feature[configuration.wumpus]   = WumpusWorld::Chamber::Feature::LivingWumpus;
@@ -825,7 +883,15 @@ player(configuration.orientation)
     
     _chamber[configuration.gold]->inventory.push(WumpusWorld::Item::Gold);
     
-    player.enter(_chamber[configuration.entry]);
+//    for (WumpusWorld::Player *aPlayer : _player) {
+//        // Note: The player must be oriented BEFORE entering the world,
+//        // otherwise his actions will begin to count against him/her.
+//        aPlayer->orient(configuration.orientation);
+//        aPlayer->enter(_chamber[configuration.entry]);
+//    }
+    
+    _defaultOrientation = configuration.orientation;
+    _defaultChamber = configuration.entry;
 }
 
 WumpusWorld::WumpusWorld(int size)

@@ -8,14 +8,17 @@
 
 #include <iostream>
 #include <fstream>
-#include "GreedyWumpusWorld.hpp"
+#include "CLIWumpusWorld.hpp"
 
 int main(int argc, const char * argv[]) {
-    std::fstream file((argc > 1)? argv[1] : "wumpus_2.txt");
+    std::fstream file((argc > 1)? argv[1] : "wumpus_1.txt");
     
-    WumpusWorld::Player player1;
+    WumpusWorld::Player player1(WumpusWorld::Player::Configuration("G"));
+    WumpusWorld::Player player2(WumpusWorld::Player::Configuration("A"));
     
-    GreedyWumpusWorld world((WumpusWorld::Configuration(file)));
+    CLIWumpusWorld world((WumpusWorld::Configuration(file)));
+    world.addPlayer(&player1);
+    world.addPlayer(&player2);
     world.run();
     
     std::cout << "Thank you for playing!" << std::endl;

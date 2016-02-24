@@ -30,7 +30,7 @@ std::ostream& operator<<(std::ostream& os, CLIWumpusWorld const &wumpusWorld)
 {
     CLIWumpusWorld::ChamberContent chamberContent;
     wumpusWorld.get(chamberContent);
-    wumpusWorld.getPlayerOn(chamberContent);
+    wumpusWorld.getPlayersOn(chamberContent);
     
     int const columnCount = wumpusWorld.size();
     int const rowCount = wumpusWorld.size();
@@ -42,7 +42,7 @@ std::ostream& operator<<(std::ostream& os, CLIWumpusWorld const &wumpusWorld)
         os << wumpusWorld.getRowSeparator();
         os << wumpusWorld.getRowSpacer();
         
-        for (int x = 0; x < chamberContent.maxLineCount+2; x++) {
+        for (int x = 0; x < chamberContent.maxLineCount+wumpusWorld._player.size()+1; x++) {
             for (int y = 0; y < columnCount; y++) {
                 int const index = columnCount * (row+1) - columnCount + y;
                 
@@ -68,10 +68,10 @@ std::ostream& operator<<(std::ostream& os, CLIWumpusWorld const &wumpusWorld)
     return os;
 }
 
-int CLIWumpusWorld::score() const
-{
-    return player.score();
-}
+//int CLIWumpusWorld::score() const
+//{
+//    return player.score();
+//}
 
 void CLIWumpusWorld::run()
 {
@@ -80,7 +80,7 @@ void CLIWumpusWorld::run()
         
         std::cout << getHeadsUpDisplayBorder();
         std::cout << getHeadsUpDisplay();
-        takeTurn();
+        _processRound();
         std::cout << getHeadsUpDisplayBorder();
         std::cout << std::endl << std::endl;
     }
@@ -111,9 +111,11 @@ void CLIWumpusWorld::get(CLIWumpusWorld::ChamberContent &chamberContent) const
     chamberContent.maxLineCount = maxiumHeight;
 }
 
-void CLIWumpusWorld::getPlayerOn(CLIWumpusWorld::ChamberContent &chamberContent) const
+void CLIWumpusWorld::getPlayersOn(CLIWumpusWorld::ChamberContent &chamberContent) const
 {
-    chamberContent.data[player.location()] << player;
+    for (WumpusWorld::Player const * const aPlayer : _player) {
+        chamberContent.data[aPlayer->location()] << *aPlayer;
+    }
 }
 
 std::string CLIWumpusWorld::getRowSeparator() const
@@ -141,9 +143,24 @@ std::string CLIWumpusWorld::getRowSpacer() const
 std::string CLIWumpusWorld::getHeadsUpDisplay() const
 {
     std::stringstream output;
-    output << " Percepts: " << WumpusWorld::Player::Sensory(player.sense()) << std::endl;
-    output << "Inventory: " << player.inventory() << std::endl;
-    output << "    Score: " << score() << std::endl;
+    output << " Percepts ";
+    for (int i = 0; i < _player.size(); i++) {
+        output << "[" << _player[i]->identification() << ": " << WumpusWorld::Player::Sensory(_player[i]->sense()) << "] ";
+    }
+    output << std::endl;
+    
+    output << "Inventory ";
+    for (int i = 0; i < _player.size(); i++) {
+        output << "[" << _player[i]->identification() << ": " << _player[i]->inventory() << "] ";
+    }
+    output << std::endl;
+    
+    output << "    Score ";
+    for (int i = 0; i < _player.size(); i++) {
+        output << "[" << _player[i]->identification() << ": " << _player[i]->score() << "] ";
+    }
+    output << std::endl;
+    
     return output.str();
 }
 
@@ -159,21 +176,33 @@ std::string CLIWumpusWorld::getHeadsUpDisplayBorder() const
 std::string CLIWumpusWorld::getResults() const
 {
     std::stringstream output;
-    if (!player.alive()) {
-        if (_chamber[player.location()]->contains(WumpusWorld::Chamber::Feature::LivingWumpus))
-            std::cout << "[ YOU WERE EATEN BY THE WUMPUS! ]" << std::endl;
-        
-        if (_chamber[player.location()]->contains(WumpusWorld::Chamber::Feature::Pit))
-            std::cout << "[ YOU FELL TO YOUR DEATH! ]" << std::endl;
+#warning Rewrite the commented code below somewhere else...
+//    if (!player.alive()) {
+//        if (_chamber[player.location()]->contains(WumpusWorld::Chamber::Feature::LivingWumpus))
+//            std::cout << "[ YOU WERE EATEN BY THE WUMPUS! ]" << std::endl;
+//        
+//        if (_chamber[player.location()]->contains(WumpusWorld::Chamber::Feature::Pit))
+//            std::cout << "[ YOU FELL TO YOUR DEATH! ]" << std::endl;
+//    }
+    
+    std::cout << "Final Scores: ";
+    std::vector<int> score = getFinalScores();
+    
+    for (int i = 0; i < score.size(); i++) {
+        std::cout << _player[i]->identification() << "-> " << score[i] << " ";
     }
     
-    std::cout << "Final Score: " << getFinalScore() << std::endl;
+    std::cout << std::endl;
     return output.str();
 }
 
-int CLIWumpusWorld::getFinalScore() const
+std::vector<int> CLIWumpusWorld::getFinalScores() const
 {
-    return player.score();
+    std::vector<int> results;
+    for (WumpusWorld::Player const * const aPlayer : _player) {
+        results.push_back(aPlayer->score());
+    }
+    return results;
 }
 
 CLIWumpusWorld::CLIWumpusWorld(Configuration const configuration):
