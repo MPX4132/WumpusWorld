@@ -10,16 +10,26 @@
 #define CLIWumpusWorld_hpp
 
 #include <iostream>
+#include <string>
+#include <vector>
+#include <sstream>
 #include "WumpusWorld.hpp"
 
 class CLIWumpusWorld : public WumpusWorld {
 public:
     
     struct ChamberContent {
-        std::vector<std::stringstream> data;
+        //std::vector<std::stringstream> data;
+		std::stringstream *data;
+
+		int capacity;
+
         int maxLineCount;
+
+		void resize(int const capacity);
         
         ChamberContent();
+		~ChamberContent();
     };
     
     
@@ -31,24 +41,31 @@ public:
     
     friend std::istream& operator>>(std::istream &is, CLIWumpusWorld& wumpusWorld);
     friend std::ostream& operator<<(std::ostream &os, CLIWumpusWorld const &wumpusWorld);
-    
-//    virtual int score() const;
+
     
     virtual void run(); // Run the game loop (ends upon not playable)
     
     CLIWumpusWorld(Configuration const configuration);
     CLIWumpusWorld(int size = DefaultSize);
+    ~CLIWumpusWorld();
     
     
 protected:
     virtual void get(ChamberContent &chamberContent) const;
     virtual void getPlayersOn(ChamberContent &chamberContent) const;
+    virtual std::string getWorld() const;
     virtual std::string getRowSeparator() const;
     virtual std::string getRowSpacer() const;
+    virtual std::string getHeadsUpDisplayPercepts() const;
+    virtual std::string getHeadsUpDisplayInventories() const;
+    virtual std::string getHeadsUpDisplayScores() const;
+    virtual std::string getHeadsUpDisplayControls() const;
     virtual std::string getHeadsUpDisplay() const;
     virtual std::string getHeadsUpDisplayBorder() const;
     virtual std::string getResults() const;
     virtual std::vector<int> getFinalScores() const;
+    
+    virtual void _processPlayer(int const i);
 };
 
 #endif /* CLIWumpusWorld_hpp */

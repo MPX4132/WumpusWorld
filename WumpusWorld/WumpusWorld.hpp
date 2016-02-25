@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <string>
 #include <fstream>
 #include <sstream>
 #include <iomanip>
@@ -60,6 +61,8 @@ public:
         
         //Coordinate operator+(Coordinate const &coordinate) const;
         Coordinate operator-(Coordinate const &coordinate) const;
+        bool operator==(Coordinate const &coordinate) const;
+        bool operator!=(Coordinate const &coordinate) const;
         
         float distanceTo(Coordinate const &coordinate) const;
         
@@ -155,6 +158,7 @@ public:
         Chamber* passage(Orientation const orientation) const;
         
         int location() const;
+        Coordinate coordinate() const;
         float distanceTo(Chamber const *chamber) const;
         
         Feature features() const;
@@ -205,10 +209,10 @@ public:
             int location;               // A location in the world.
             
             Configuration(std::string const identification = "",
-                          Orientation const orientation = Orientation::North,
-                          int const cost = DefaultActionCost,
                           int const space = DefaultSpace,
+                          int const cost = DefaultActionCost,
                           int const turnCost = DefaultActionCost,
+                          Orientation const orientation = Orientation::North,
                           int const location = 0
                           );
         };
@@ -224,7 +228,7 @@ public:
         
         Inventory inventory() const;
         
-        int score() const;
+        virtual int score() const;
         
         int location() const;
         
@@ -251,7 +255,7 @@ public:
         
         bool alive() const;
         
-        bool finished() const;
+        virtual bool finished() const;
         
         virtual Configuration nextMove();
         
@@ -289,10 +293,11 @@ public:
     Chamber* passage(Chamber const *chamber, Orientation const orientation) const;
     
     Chamber& chamber(int i) const;
+    Chamber* goldChamber() const;
     
     virtual bool playable() const; // Checks if the game is not over
     
-    void addPlayer(Player * const player);
+    virtual void addPlayer(Player * const player);
     
     int size() const;
     
@@ -318,7 +323,7 @@ protected:
     Edge _edge(int const position) const;
     
     virtual void _processRound();
-    virtual void _process(Player * const player);
+    virtual void _processPlayer(int const i);
 };
 
 #endif

@@ -11,10 +11,10 @@
 // ================================================================
 #pragma mark - Coordinates Implementation
 // ================================================================
-std::istream &operator>>(std::istream& is, WumpusWorld::Coordinate &coordinates)
+std::istream &operator>>(std::istream& is, WumpusWorld::Coordinate &coordinate)
 {
-    is >> coordinates.x;
-    is >> coordinates.y;
+    is >> coordinate.x;
+    is >> coordinate.y;
     return is;
 }
 
@@ -43,6 +43,16 @@ float WumpusWorld::Coordinate::distanceTo(WumpusWorld::Coordinate const &coordin
 WumpusWorld::Coordinate WumpusWorld::Coordinate::operator-(WumpusWorld::Coordinate const &coordinate) const
 {
     return Coordinate(xDifference(coordinate), yDifference(coordinate));
+}
+
+bool WumpusWorld::Coordinate::operator==(Coordinate const &coordinate) const
+{
+    return x == coordinate.x && y == coordinate.y;
+}
+
+bool WumpusWorld::Coordinate::operator!=(Coordinate const &coordinate) const
+{
+    return x != coordinate.x || y != coordinate.y;
 }
 
 WumpusWorld::Coordinate WumpusWorld::Coordinate::Dereference(int const size, int const coordinates)
@@ -278,6 +288,11 @@ WumpusWorld::Chamber* WumpusWorld::Chamber::passage(WumpusWorld::Orientation con
     return _world->passage(this, orientation);
 }
 
+WumpusWorld::Coordinate WumpusWorld::Chamber::coordinate() const
+{
+    return WumpusWorld::Coordinate::Dereference(_world->size(), location());
+}
+
 int WumpusWorld::Chamber::location() const
 {
     return _world->_locate(this);
@@ -378,17 +393,17 @@ WumpusWorld::Chamber::~Chamber()
 #pragma mark - Player Configuration Implementation
 // ================================================================
 WumpusWorld::Player::Configuration::Configuration(std::string const identification,
-                                                  Orientation const orientation,
-                                                  int const cost,
                                                   int const space,
+                                                  int const cost,
                                                   int const turnCost,
+                                                  Orientation const orientation,
                                                   int const location
                                                   ):
 identification(identification),
-orientation(orientation),
-cost(cost),
 space(space),
+cost(cost),
 turnCost(turnCost),
+orientation(orientation),
 location(location)
 {
 }
@@ -399,15 +414,15 @@ location(location)
 // ================================================================
 std::istream& operator>>(std::istream& is, WumpusWorld::Player &player)
 {
-    // If cin is being used for input, output some help text
-    if (&is == &std::cin) {
-        std::string const nav = "R - Turn Right | F - Forward | L - Turn Left";
-        std::string const aux = "D - Drop | G - Grab | S - Shoot | C - Climb Out";
-        
-        std::cout << nav << std::endl;
-        std::cout << aux << std::endl;
-        std::cout << "Action: ";
-    }
+//    // If cin is being used for input, output some help text
+//    if (&is == &std::cin) {
+//        std::string const nav = "R - Turn Right | F - Forward | L - Turn Left";
+//        std::string const aux = "D - Drop | G - Grab | S - Shoot | C - Climb Out";
+//        
+//        std::cout << nav << std::endl;
+//        std::cout << aux << std::endl;
+//        std::cout << "Action: ";
+//    }
     
     // No error checking for now...
     std::string action;
@@ -622,7 +637,7 @@ void WumpusWorld::Player::climb()
 
 void WumpusWorld::Player::orient(Orientation const orientation)
 {
-    _prepareForActionWithCost((orientation - this->orientation()));
+    _prepareForActionWithCost((orientation - this->orientation()) * _configuration.turnCost);
     _configuration.orientation = orientation;
 }
 
@@ -798,6 +813,16 @@ WumpusWorld::Chamber& WumpusWorld::chamber(int i) const
     return *_chamber[i];
 }
 
+WumpusWorld::Chamber* WumpusWorld::goldChamber() const
+{
+    for (WumpusWorld::Chamber *aChamber : _chamber) {
+        if (aChamber->contains(WumpusWorld::Chamber::Percept::Glitter)) {
+            return aChamber;
+        }
+    }
+    return nullptr;
+}
+
 
 
 bool WumpusWorld::playable() const
@@ -855,13 +880,13 @@ WumpusWorld::Edge WumpusWorld::_edge(int const position) const
 
 void WumpusWorld::_processRound() {
     for (int i = 0; i < _player.size(); i++) {
-        if (!_player[i]->finished()) _process(_player[i]);
+        if (!_player[i]->finished()) _processPlayer(i);
     }
 }
 
-void WumpusWorld::_process(WumpusWorld::Player * const player)
+void WumpusWorld::_processPlayer(int const i)
 {
-    player->nextMove();
+    _player[i]->nextMove();
 }
 
 WumpusWorld::WumpusWorld(WumpusWorld::Configuration const configuration):
