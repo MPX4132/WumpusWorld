@@ -3,7 +3,6 @@
 //  WumpusWorld
 //
 //  Created by Matias Barcenas on 2/22/16.
-//  Copyright © 2016 Matias Barcenas. All rights reserved.
 //
 
 #include "CLIWumpusWorld.hpp"
@@ -12,7 +11,7 @@
 // ================================================================
 #pragma mark - Chamber Content Implementation
 // ================================================================
-void CLIWumpusWorld::ChamberContent::resize(int const capacity)
+void CLIWumpusWorld::ChamberContent::resize(int const capacity) // THIS IS BULLSHIT, GET FREAKING STL SUPPORT
 {
 	std::stringstream *newData = new std::stringstream[capacity]();
 

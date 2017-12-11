@@ -6,7 +6,3 @@ make clean
 
 TO RUN THE PROGRAM, type:
 ./WumpusWorld
-
-I apologize for not adding enough comments on my source code,
-I might've procrastinated a little too long and started a little late!
-Everything seems to be working though.

@@ -3,7 +3,6 @@
 //  WumpusWorld
 //
 //  Created by Matias Barcenas on 2/24/16.
-//  Copyright © 2016 Matias Barcenas. All rights reserved.
 //
 
 #ifndef GreedyPlayer_hpp
@@ -14,9 +13,14 @@
 #include <vector>
 #include "WumpusWorld.hpp"
 
+
+// The GreedyPlayer class extends the WumpusWorld::Player by taking
+// the greedy approach to getting to a destination. It essentially
+// overwrites a virtual method in the base class that's called
+// when it's the player's time to make its next move.
 class GreedyPlayer : public WumpusWorld::Player {
-public:    
-    int score() const;
+public:
+	
     Configuration nextMove();
     bool finished() const;
     

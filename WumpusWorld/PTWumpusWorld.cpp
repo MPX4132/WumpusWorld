@@ -3,12 +3,14 @@
 //  WumpusWorld
 //
 //  Created by Matias Barcenas on 2/24/16.
-//  Copyright © 2016 Matias Barcenas. All rights reserved.
 //
 
 #include "PTWumpusWorld.hpp"
 
 
+// ================================================================
+#pragma mark - PTWumpusWorld Implementation
+// ================================================================
 void PTWumpusWorld::addPlayer(Player * const player)
 {
     WumpusWorld::addPlayer(player);
@@ -25,11 +27,21 @@ void PTWumpusWorld::_processPlayer(int const i)
 
 void PTWumpusWorld::getPlayersOn(ChamberContent &chamberContent) const
 {
-    for (int i = 0; i < _player.size(); i++) {
-        for (Coordinate const &coordinate : _coordinates[i]) {
-            chamberContent.data[WumpusWorld::Coordinate::Reference(size(), coordinate)] << _player[i]->identification() << std::endl;
-        }
-    }
+	if (playable()) {
+		CLIWumpusWorld::getPlayersOn(chamberContent);
+		return;
+	}
+
+	for (int i = 0; i < _player.size(); i++) {
+		int count = 0;
+		for (Coordinate const &coordinate : _coordinates[i]) {
+			std::stringstream &content = chamberContent.data[WumpusWorld::Coordinate::Reference(size(), coordinate)];
+			content << _player[i]->identification();
+			if (PTWumpusWorld::ShowStep) content << "-" << count++;
+			content << std::endl;
+		}
+	}
+
 }
 
 std::string PTWumpusWorld::getHeadsUpDisplay() const

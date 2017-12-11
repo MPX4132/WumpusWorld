@@ -3,7 +3,6 @@
 //  WumpusWorld
 //
 //  Created by Matias Barcenas on 2/24/16.
-//  Copyright © 2016 Matias Barcenas. All rights reserved.
 //
 
 #ifndef PTWumpusWorld_hpp
@@ -14,9 +13,15 @@
 #include <sstream>
 #include "CLIWumpusWorld.hpp"
 
+
+// The PTWumpusWorld class, or Player Tracking Wumpus World class
+// extends CLIWumpusWorld by keeping a log of the player's movment
+// on the world and outputs the final path upon the simulation ending
+// of each player.
 class PTWumpusWorld : public CLIWumpusWorld {
 public:
-    
+	static const bool ShowStep = true;
+
     void addPlayer(Player * const player);
     
     PTWumpusWorld(Configuration const configuration);

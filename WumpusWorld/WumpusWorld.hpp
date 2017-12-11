@@ -160,12 +160,15 @@ public:
         int location() const;
         Coordinate coordinate() const;
         float distanceTo(Chamber const *chamber) const;
+		int eightDistanceTo(Chamber const *chamber) const;
         
         Feature features() const;
         bool contains(Feature const feature) const;
         Percept environment() const;
         bool contains(Percept const percept) const;
-        
+
+		std::vector<Chamber *> neighbors() const;
+
         bool hit();
         
         

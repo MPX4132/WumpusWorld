@@ -8,13 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		C30325C01C7A67F400A7C8CC /* wumpus_2.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = C30325BF1C7A679100A7C8CC /* wumpus_2.txt */; };
+		C318E0AB1CC5FB59001DB093 /* ACOPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C318E0A91CC5FB59001DB093 /* ACOPlayer.cpp */; };
 		C33BBCC11C7BD96400863E22 /* CLIWumpusWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C33BBCBF1C7BD96400863E22 /* CLIWumpusWorld.cpp */; };
 		C3628D751C668D380033E9A1 /* WumpusWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3628D731C668D380033E9A1 /* WumpusWorld.cpp */; };
 		C3A5DB881C5E9AE40001FA22 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A5DB871C5E9AE40001FA22 /* main.cpp */; };
 		C3A5DBA91C5F0DE70001FA22 /* wumpus_1.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3A5DBA81C5F0DCA0001FA22 /* wumpus_1.txt */; };
+		C3BE84671C8518DB0042211A /* AStarPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3FF1E941C7E87740093960A /* AStarPlayer.cpp */; };
 		C3C63D921C7DC2C900E55C9C /* GreedyPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3C63D901C7DC2C900E55C9C /* GreedyPlayer.cpp */; };
 		C3FF1E931C7E76470093960A /* PTWumpusWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3FF1E911C7E76470093960A /* PTWumpusWorld.cpp */; };
-		C3FF1E961C7E87740093960A /* AStarPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3FF1E941C7E87740093960A /* AStarPlayer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,6 +34,8 @@
 
 /* Begin PBXFileReference section */
 		C30325BF1C7A679100A7C8CC /* wumpus_2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wumpus_2.txt; sourceTree = "<group>"; };
+		C318E0A91CC5FB59001DB093 /* ACOPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ACOPlayer.cpp; sourceTree = "<group>"; };
+		C318E0AA1CC5FB59001DB093 /* ACOPlayer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ACOPlayer.hpp; sourceTree = "<group>"; };
 		C33BBCBF1C7BD96400863E22 /* CLIWumpusWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CLIWumpusWorld.cpp; sourceTree = "<group>"; };
 		C33BBCC01C7BD96400863E22 /* CLIWumpusWorld.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CLIWumpusWorld.hpp; sourceTree = "<group>"; };
 		C3628D731C668D380033E9A1 /* WumpusWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WumpusWorld.cpp; sourceTree = "<group>"; };
@@ -80,6 +83,8 @@
 		C3A5DB861C5E9AE40001FA22 /* WumpusWorld */ = {
 			isa = PBXGroup;
 			children = (
+				C318E0A91CC5FB59001DB093 /* ACOPlayer.cpp */,
+				C318E0AA1CC5FB59001DB093 /* ACOPlayer.hpp */,
 				C3FF1E941C7E87740093960A /* AStarPlayer.cpp */,
 				C3FF1E951C7E87740093960A /* AStarPlayer.hpp */,
 				C3C63D901C7DC2C900E55C9C /* GreedyPlayer.cpp */,
@@ -125,7 +130,7 @@
 		C3A5DB7C1C5E9AE40001FA22 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0910;
 				ORGANIZATIONNAME = "Matias Barcenas";
 				TargetAttributes = {
 					C3A5DB831C5E9AE40001FA22 = {
@@ -159,7 +164,8 @@
 				C33BBCC11C7BD96400863E22 /* CLIWumpusWorld.cpp in Sources */,
 				C3A5DB881C5E9AE40001FA22 /* main.cpp in Sources */,
 				C3628D751C668D380033E9A1 /* WumpusWorld.cpp in Sources */,
-				C3FF1E961C7E87740093960A /* AStarPlayer.cpp in Sources */,
+				C318E0AB1CC5FB59001DB093 /* ACOPlayer.cpp in Sources */,
+				C3BE84671C8518DB0042211A /* AStarPlayer.cpp in Sources */,
 				C3FF1E931C7E76470093960A /* PTWumpusWorld.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -175,13 +181,21 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -218,13 +232,21 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";

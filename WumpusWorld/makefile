@@ -15,11 +15,17 @@ PTWumpusWorld.o: PTWumpusWorld.cpp
 GreedyPlayer.o: GreedyPlayer.cpp
 	$(compiler) $(flags) -c GreedyPlayer.cpp
 
+AStarPlayer.o: AStarPlayer.cpp
+	$(compiler) $(flags) -c AStarPlayer.cpp
+
+ACOPlayer.o: ACOPlayer.cpp
+	$(compiler) $(flags) -c ACOPlayer.cpp
+
 main.o: main.cpp
 	$(compiler) $(flags) -c main.cpp
 
-Program: WumpusWorld.o CLIWumpusWorld.o PTWumpusWorld.o GreedyPlayer.o main.o
-	$(compiler) $(flags) WumpusWorld.o CLIWumpusWorld.o PTWumpusWorld.o GreedyPlayer.o main.o -o WumpusWorld
+Program: WumpusWorld.o CLIWumpusWorld.o PTWumpusWorld.o ACOPlayer.o main.o
+	$(compiler) $(flags) WumpusWorld.o CLIWumpusWorld.o PTWumpusWorld.o ACOPlayer.o main.o -o WumpusWorld
 
 clean:
 	rm -rfv *o WumpusWorld

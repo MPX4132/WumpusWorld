@@ -3,17 +3,14 @@
 //  WumpusWorld
 //
 //  Created by Matias Barcenas on 2/24/16.
-//  Copyright © 2016 Matias Barcenas. All rights reserved.
 //
 
 #include "GreedyPlayer.hpp"
 
 
-int GreedyPlayer::score() const
-{
-    return 0;
-}
-
+// ================================================================
+#pragma mark - GreedyPlayer Implementation
+// ================================================================
 WumpusWorld::Player::Configuration GreedyPlayer::nextMove()
 {
     // Check if the chamber contains gold
@@ -22,15 +19,18 @@ WumpusWorld::Player::Configuration GreedyPlayer::nextMove()
         grab();
         return _configuration;
     }
-    
+
+	// Assume we're moving north as default
     WumpusWorld::Chamber *nextChamber = chamber()->passage(WumpusWorld::Orientation::North);
-    
+
+	// Make a greedy choice and pick the one with the shortest eight-distance
     for (int heading = WumpusWorld::Orientation::North; heading <= WumpusWorld::Orientation::NorthWest; heading++) {
         WumpusWorld::Chamber *aChamber = chamber()->passage(static_cast<WumpusWorld::Orientation>(heading));
         
         if (!aChamber) continue;
-        
-        if (!nextChamber || nextChamber->distanceTo(_destination) > aChamber->distanceTo(_destination)) {
+
+		// This could potentially be randomized, when they have the same eight distance but I don't think it HAS TO be.
+        if (!nextChamber || nextChamber->eightDistanceTo(_destination) > aChamber->eightDistanceTo(_destination)) {
             nextChamber = aChamber;
         }
     }

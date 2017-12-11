@@ -305,6 +305,14 @@ float WumpusWorld::Chamber::distanceTo(WumpusWorld::Chamber const *chamber) cons
     return thisCoordinate.distanceTo(thatCoordinate);
 }
 
+int WumpusWorld::Chamber::eightDistanceTo(Chamber const *chamber) const
+{
+	WumpusWorld::Coordinate thisCoordinate(WumpusWorld::Coordinate::Dereference(_world->size(), this->location()));
+	WumpusWorld::Coordinate thatCoordinate(WumpusWorld::Coordinate::Dereference(_world->size(), chamber->location()));
+	WumpusWorld::Coordinate change = thisCoordinate - thatCoordinate;
+	return std::max(std::abs(change.x), std::abs(change.y));
+}
+
 WumpusWorld::Chamber::Feature WumpusWorld::Chamber::features() const
 {
     return _features;
@@ -342,6 +350,20 @@ WumpusWorld::Chamber::Percept WumpusWorld::Chamber::environment() const
     }
     
     return percepts;
+}
+
+std::vector<WumpusWorld::Chamber *> WumpusWorld::Chamber::neighbors() const
+{
+	std::vector<WumpusWorld::Chamber *> neighbors;
+
+	for (int orientation = North; orientation <= NorthWest; orientation++) {
+		WumpusWorld::Orientation degree = static_cast<WumpusWorld::Orientation>(orientation);
+		WumpusWorld::Chamber *neighbor = passage(degree);
+		if (!neighbor) continue;
+		neighbors.push_back(neighbor);
+	}
+
+	return neighbors;
 }
 
 bool WumpusWorld::Chamber::hit() {

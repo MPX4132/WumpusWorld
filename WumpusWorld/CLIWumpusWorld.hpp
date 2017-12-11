@@ -3,7 +3,6 @@
 //  WumpusWorld
 //
 //  Created by Matias Barcenas on 2/22/16.
-//  Copyright © 2016 Matias Barcenas. All rights reserved.
 //
 
 #ifndef CLIWumpusWorld_hpp
@@ -15,11 +14,21 @@
 #include <sstream>
 #include "WumpusWorld.hpp"
 
+
+// The CLI class, or Command Line Interface class, extends the base class
+// for the world and contains utilities to properly display different items
+// and take input from the command line.
 class CLIWumpusWorld : public WumpusWorld {
 public:
     
     struct ChamberContent {
         //std::vector<std::stringstream> data;
+
+		// Must use dynamically allocated pointer due to the fact
+		// THE LAB'S G++ IS SO FUCKING OUTDATED, it doesn't even have
+		// proper STL support. Kirtley needs to fix that shit, IT'S ANNOYING.
+		// Wasted TWO freaking hours reseraching what the hell was the compilation
+		// problem when brining it from Mac OS (where it compiles fine) to Ubuntu.
 		std::stringstream *data;
 
 		int capacity;
