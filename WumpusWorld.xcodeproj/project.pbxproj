@@ -41,12 +41,12 @@
 		C3628D731C668D380033E9A1 /* WumpusWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WumpusWorld.cpp; sourceTree = "<group>"; };
 		C3628D741C668D380033E9A1 /* WumpusWorld.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = WumpusWorld.hpp; sourceTree = "<group>"; };
 		C362C8841C605CFB000E3FBA /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; };
-		C362C8861C605D0C000E3FBA /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		C3A5DB841C5E9AE40001FA22 /* WumpusWorld */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WumpusWorld; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3A5DB871C5E9AE40001FA22 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C3A5DBA81C5F0DCA0001FA22 /* wumpus_1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wumpus_1.txt; sourceTree = "<group>"; };
 		C3C63D901C7DC2C900E55C9C /* GreedyPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GreedyPlayer.cpp; sourceTree = "<group>"; };
 		C3C63D911C7DC2C900E55C9C /* GreedyPlayer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GreedyPlayer.hpp; sourceTree = "<group>"; };
+		C3D7E0F21FDE36E000EE35A4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		C3FF1E911C7E76470093960A /* PTWumpusWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PTWumpusWorld.cpp; sourceTree = "<group>"; };
 		C3FF1E921C7E76470093960A /* PTWumpusWorld.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PTWumpusWorld.hpp; sourceTree = "<group>"; };
 		C3FF1E941C7E87740093960A /* AStarPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AStarPlayer.cpp; sourceTree = "<group>"; };
@@ -98,7 +98,7 @@
 				C30325BF1C7A679100A7C8CC /* wumpus_2.txt */,
 				C3A5DBA81C5F0DCA0001FA22 /* wumpus_1.txt */,
 				C362C8841C605CFB000E3FBA /* makefile */,
-				C362C8861C605D0C000E3FBA /* README.txt */,
+				C3D7E0F21FDE36E000EE35A4 /* README.md */,
 				C3A5DB871C5E9AE40001FA22 /* main.cpp */,
 			);
 			path = WumpusWorld;
