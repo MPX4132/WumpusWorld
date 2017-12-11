@@ -95,13 +95,21 @@
 				C33BBCC01C7BD96400863E22 /* CLIWumpusWorld.hpp */,
 				C3628D731C668D380033E9A1 /* WumpusWorld.cpp */,
 				C3628D741C668D380033E9A1 /* WumpusWorld.hpp */,
-				C30325BF1C7A679100A7C8CC /* wumpus_2.txt */,
-				C3A5DBA81C5F0DCA0001FA22 /* wumpus_1.txt */,
+				C3D7E0F31FDE384800EE35A4 /* Sample Configurations */,
 				C362C8841C605CFB000E3FBA /* makefile */,
 				C3D7E0F21FDE36E000EE35A4 /* README.md */,
 				C3A5DB871C5E9AE40001FA22 /* main.cpp */,
 			);
 			path = WumpusWorld;
+			sourceTree = "<group>";
+		};
+		C3D7E0F31FDE384800EE35A4 /* Sample Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				C30325BF1C7A679100A7C8CC /* wumpus_2.txt */,
+				C3A5DBA81C5F0DCA0001FA22 /* wumpus_1.txt */,
+			);
+			path = "Sample Configurations";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
