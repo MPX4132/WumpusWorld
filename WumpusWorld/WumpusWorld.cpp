@@ -75,6 +75,28 @@ WumpusWorld::Coordinate::Coordinate(int const x, int const y)
 // ================================================================
 #pragma mark - Configuration Implementation
 // ================================================================
+bool WumpusWorld::Configuration::good() const
+{
+    if (!size) return false;
+
+    int locationLimit = std::pow(size, 2);
+
+    if (entry >= locationLimit) return false;
+
+    if (orientation < North || orientation > NorthWest) return false;
+
+    for (int const pitLocation : pits)
+    {
+        if (pitLocation >= locationLimit) return false;
+    }
+
+    if (gold >= locationLimit) return false;
+
+    if (wumpus >= locationLimit) return false;
+
+    return true;
+}
+
 WumpusWorld::Configuration::Configuration(std::fstream &file)
 {
     if (!file.good()) {
