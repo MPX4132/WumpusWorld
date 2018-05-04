@@ -25,7 +25,9 @@ main.o: main.cpp
 	$(compiler) $(flags) -c main.cpp
 
 Program: WumpusWorld.o CLIWumpusWorld.o PTWumpusWorld.o ACOPlayer.o main.o
-	$(compiler) $(flags) WumpusWorld.o CLIWumpusWorld.o PTWumpusWorld.o ACOPlayer.o main.o -o WumpusWorld
+	mkdir -p bin
+	cp Sample\ Configurations/* bin
+	$(compiler) $(flags) WumpusWorld.o CLIWumpusWorld.o PTWumpusWorld.o ACOPlayer.o main.o -o bin/WumpusWorld
 
 clean:
-	rm -rfv *o WumpusWorld
+	rm -rfv *o bin
