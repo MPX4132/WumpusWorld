@@ -22,22 +22,15 @@ class CLIWumpusWorld : public WumpusWorld {
 public:
     
     struct ChamberContent {
-        //std::vector<std::stringstream> data;
-
-        // Must use dynamically allocated pointer due to the fact
-        // THE LAB'S G++ IS SO FUCKING OUTDATED, it doesn't even have
-        // proper STL support. Kirtley needs to fix that shit, IT'S ANNOYING.
-        // Wasted TWO freaking hours reseraching what the hell was the compilation
-        // problem when brining it from Mac OS (where it compiles fine) to Ubuntu.
-        std::stringstream *data;
+        std::vector<std::stringstream> data;
 
         int capacity;
 
-    int maxLineCount;
+        int maxLineCount;
 
         void resize(int const capacity);
         
-    ChamberContent();
+        ChamberContent();
         ~ChamberContent();
     };
     

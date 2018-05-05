@@ -11,32 +11,19 @@
 // ================================================================
 #pragma mark - Chamber Content Implementation
 // ================================================================
-void CLIWumpusWorld::ChamberContent::resize(int const capacity) // THIS IS BULLSHIT, GET FREAKING STL SUPPORT
+void CLIWumpusWorld::ChamberContent::resize(int const capacity)
 {
-    std::stringstream *newData = new std::stringstream[capacity]();
-
-    if (data) {
-        for (int i = 0; i < this->capacity; i++) {
-            newData[i] << data[i].str();
-        }
-
-        delete [] data;
-    }
-
-    data = newData;
+    this->data.resize(capacity);
     this->capacity = capacity;
 }
 
 CLIWumpusWorld::ChamberContent::ChamberContent():
-data(nullptr),
 capacity(0),
 maxLineCount(0)
 {}
 
 CLIWumpusWorld::ChamberContent::~ChamberContent()
-{
-    delete [] data;
-}
+{}
 
 
 // ================================================================
