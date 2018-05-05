@@ -42,10 +42,10 @@ int main(int argc, const char * argv[]) {
 
 	// Create and insert the player into the world.
     AStarPlayer player1(WumpusWorld::Player::Configuration("A-*"), world.goldChamber());
-	ACOPlayer player2(WumpusWorld::Player::Configuration("ACO"), world.goldChamber());
+	//ACOPlayer player2(WumpusWorld::Player::Configuration("ACO"), world.goldChamber());
 
 	world.addPlayer(&player1);
-    world.addPlayer(&player2);
+    //world.addPlayer(&player2); // WARNING: If you enable both players, there won't be gold for both (infinite loop)!
 
     world.run();
 
