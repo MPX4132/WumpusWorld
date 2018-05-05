@@ -831,7 +831,7 @@ WumpusWorld::Chamber* WumpusWorld::passage(WumpusWorld::Chamber const* chamber, 
     return _chamber[location];
 }
 
-WumpusWorld::Chamber& WumpusWorld::chamber(int i) const
+WumpusWorld::Chamber& WumpusWorld::chamber(std::vector<Chamber*>::size_type i) const
 {
     return *_chamber[i];
 }
@@ -876,7 +876,7 @@ int WumpusWorld::_locate(Chamber const *chamber) const
 {
     // Find the position of the chamber (can use pointer arithmetic, but simplifiy it for now)
     for (std::vector<Chamber*>::size_type i = 0; i < _chamber.size(); i++) {
-        if (_chamber[i] == chamber) return i;
+        if (_chamber[i] == chamber) return static_cast<int>(i);
     }
     
     return -1;
@@ -907,7 +907,7 @@ void WumpusWorld::_processRound() {
     }
 }
 
-void WumpusWorld::_processPlayer(int const i)
+void WumpusWorld::_processPlayer(std::vector<Player*>::size_type const i)
 {
     _player[i]->nextMove();
 }

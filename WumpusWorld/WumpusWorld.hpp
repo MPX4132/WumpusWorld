@@ -297,7 +297,7 @@ public:
     
     Chamber* passage(Chamber const *chamber, Orientation const orientation) const;
     
-    Chamber& chamber(int i) const;
+    Chamber& chamber(std::vector<Chamber*>::size_type i) const;
     Chamber* goldChamber() const;
     
     virtual bool playable() const; // Checks if the game is not over
@@ -328,7 +328,7 @@ protected:
     Edge _edge(int const position) const;
     
     virtual void _processRound();
-    virtual void _processPlayer(int const i);
+    virtual void _processPlayer(std::vector<Player*>::size_type const i);
 };
 
 #endif
