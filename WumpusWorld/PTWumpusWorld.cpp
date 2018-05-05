@@ -32,7 +32,7 @@ void PTWumpusWorld::getPlayersOn(ChamberContent &chamberContent) const
 		return;
 	}
 
-	for (int i = 0; i < _player.size(); i++) {
+	for (std::vector<WumpusWorld::Player*>::size_type i = 0; i < _player.size(); i++) {
 		int count = 0;
 		for (Coordinate const &coordinate : _coordinates[i]) {
 			std::stringstream &content = chamberContent.data[WumpusWorld::Coordinate::Reference(size(), coordinate)];
@@ -56,7 +56,7 @@ std::string PTWumpusWorld::getResults() const
 {
     std::stringstream output;
     
-    for (int i = 0; i < _player.size(); i++) {
+    for (std::vector<WumpusWorld::Player*>::size_type i = 0; i < _player.size(); i++) {
         output << "Path for " << _player[i]->identification() << ": ";
         for (Coordinate const &coordinate : _coordinates[i]) {
             output << coordinate << " ";
@@ -76,7 +76,7 @@ PTWumpusWorld::PTWumpusWorld(Configuration const configuration):
 CLIWumpusWorld(configuration)
 {
     _coordinates.resize(_player.size());
-    for (int i = 0; i < _player.size(); i++) {
+    for (std::vector<WumpusWorld::Player*>::size_type i = 0; i < _player.size(); i++) {
         _coordinates[i].push_back(_player[i]->chamber()->coordinate());
     }
 }

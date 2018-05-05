@@ -77,7 +77,7 @@ public:
 	Configuration nextMove();
 	bool finished() const;
 
-	AStarPlayer(Configuration const configuration, WumpusWorld::Chamber const *const destination);
+	AStarPlayer(Configuration const configuration, WumpusWorld::Chamber const * const destination);
 	~AStarPlayer();
 
 

@@ -100,7 +100,7 @@ protected:
 
 	typedef std::vector<Ant> Ants;
 
-	std::vector<WumpusWorld::Chamber  *> _solution;
+	std::vector<WumpusWorld::Chamber *> _solution;
 	WumpusWorld::Chamber * const _destination;
 	
 	void _resolvePath();

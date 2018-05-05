@@ -382,7 +382,7 @@ int WumpusWorld::Chamber::Count(WumpusWorld::Chamber::Feature features)
 {
     int count = 0;
     
-    for (int i = 0; i < sizeof(features); i++) {
+    for (int i = 0; i < static_cast<int>(sizeof(features)); i++) {
         if (features & 1) count++;
         features = static_cast<WumpusWorld::Chamber::Feature>(features >> 1);
     }
@@ -394,7 +394,7 @@ int WumpusWorld::Chamber::Count(WumpusWorld::Chamber::Percept percepts)
 {
     int count = 0;
     
-    for (int i = 0; i < sizeof(percepts); i++) {
+    for (int i = 0; i < static_cast<int>(sizeof(percepts)); i++) {
         if (percepts & 1) count++;
         percepts = static_cast<WumpusWorld::Chamber::Percept>(percepts >> 1);
     }
@@ -427,8 +427,8 @@ WumpusWorld::Player::Configuration::Configuration(std::string const identificati
                                                   ):
 identification(identification),
 space(space),
-cost(cost),
 turnCost(turnCost),
+cost(cost),
 orientation(orientation),
 location(location)
 {
@@ -752,14 +752,14 @@ bool WumpusWorld::Player::_prepareForActionWithCost(int const tax)
 WumpusWorld::Player::Player(WumpusWorld::Player::Configuration const configuration):
 _configuration(configuration),
 _inventory(configuration.space),
-_finished(false),
 _chamber(nullptr),
 _dropped(Inventory::Item::Air),
-_scream(false),
-_bump(false),
 _health(100),
 _score(0),
-_ammo(1)
+_ammo(1),
+_bump(false),
+_scream(false),
+_finished(false)
 {
     // We'll start out with a bow
     _inventory.push(WumpusWorld::Inventory::Item::Bow);
@@ -875,7 +875,7 @@ int WumpusWorld::size() const
 int WumpusWorld::_locate(Chamber const *chamber) const
 {
     // Find the position of the chamber (can use pointer arithmetic, but simplifiy it for now)
-    for (int i = 0; i < _chamber.size(); i++) {
+    for (std::vector<Chamber*>::size_type i = 0; i < _chamber.size(); i++) {
         if (_chamber[i] == chamber) return i;
     }
     
@@ -902,7 +902,7 @@ WumpusWorld::Edge WumpusWorld::_edge(int const position) const
 }
 
 void WumpusWorld::_processRound() {
-    for (int i = 0; i < _player.size(); i++) {
+    for (std::vector<Player*>::size_type i = 0; i < _player.size(); i++) {
         if (!_player[i]->finished()) _processPlayer(i);
     }
 }
@@ -925,7 +925,7 @@ _defaultChamber(0)
         feature[pit] = static_cast<WumpusWorld::Chamber::Feature>(feature[pit] | WumpusWorld::Chamber::Feature::Pit);
     }
     
-    for (int i = 0; i < feature.size(); i++) {
+    for (std::vector<WumpusWorld::Chamber::Feature>::size_type i = 0; i < feature.size(); i++) {
         _chamber.push_back(new WumpusWorld::Chamber(this, feature[i]));
     }
     

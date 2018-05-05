@@ -265,7 +265,7 @@ public:
         virtual Configuration nextMove();
         
         Player(Configuration const configuration = Configuration());
-        ~Player();
+        virtual ~Player();
         
         
     protected:

@@ -217,7 +217,7 @@ void AStarPlayer::_resolvePath()
 
 
 
-AStarPlayer::AStarPlayer(Configuration const configuration, WumpusWorld::Chamber const *const destination):
+AStarPlayer::AStarPlayer(Configuration const configuration, WumpusWorld::Chamber const * const destination):
 WumpusWorld::Player(configuration),
 _destination(destination)
 {}

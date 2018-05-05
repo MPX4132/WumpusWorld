@@ -1,7 +1,7 @@
 all: Program
 
 compiler = g++
-flags = -std=c++0x -g
+flags = -std=c++11 -g -Wall -Wno-unknown-pragmas
 
 WumpusWorld.o: WumpusWorld.cpp
 	$(compiler) $(flags) -c WumpusWorld.cpp
@@ -24,10 +24,10 @@ ACOPlayer.o: ACOPlayer.cpp
 main.o: main.cpp
 	$(compiler) $(flags) -c main.cpp
 
-Program: WumpusWorld.o CLIWumpusWorld.o PTWumpusWorld.o ACOPlayer.o main.o
+Program: WumpusWorld.o CLIWumpusWorld.o PTWumpusWorld.o AStarPlayer.o ACOPlayer.o main.o
 	mkdir -p bin
 	cp Sample\ Configurations/* bin
-	$(compiler) $(flags) WumpusWorld.o CLIWumpusWorld.o PTWumpusWorld.o ACOPlayer.o main.o -o bin/WumpusWorld
+	$(compiler) $(flags) WumpusWorld.o CLIWumpusWorld.o PTWumpusWorld.o AStarPlayer.o ACOPlayer.o main.o -o bin/WumpusWorld
 
 clean:
 	rm -rfv *o bin

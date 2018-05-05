@@ -33,11 +33,11 @@ public:
 
 		int capacity;
 
-        int maxLineCount;
+    int maxLineCount;
 
 		void resize(int const capacity);
         
-        ChamberContent();
+    ChamberContent();
 		~ChamberContent();
     };
     
@@ -56,7 +56,7 @@ public:
     
     CLIWumpusWorld(Configuration const configuration);
     CLIWumpusWorld(int size = DefaultSize);
-    ~CLIWumpusWorld();
+    virtual ~CLIWumpusWorld();
     
     
 protected:

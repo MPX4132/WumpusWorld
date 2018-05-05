@@ -64,7 +64,7 @@ std::ostream& operator<<(std::ostream& os, CLIWumpusWorld const &wumpusWorld)
         os << wumpusWorld.getRowSeparator();
         os << wumpusWorld.getRowSpacer();
         
-        for (int x = 0; x < chamberContent.maxLineCount+wumpusWorld._player.size()+1; x++) {
+        for (std::vector<WumpusWorld::Player*>::size_type x = 0; x < chamberContent.maxLineCount + wumpusWorld._player.size() + 1; x++) {
             for (int y = 0; y < columnCount; y++) {
                 int const index = columnCount * (row+1) - columnCount + y;
                 
@@ -124,7 +124,7 @@ void CLIWumpusWorld::get(CLIWumpusWorld::ChamberContent &chamberContent) const
     // I'll later use this string stream to fetch a row from each depending on what row of the
     // board I'm about to print. I'm keeping a "height" variable to make all squares have the
     // same height.
-    for (int i = 0; i < _chamber.size(); i++) {
+    for (std::vector<WumpusWorld::Chamber*>::size_type i = 0; i < _chamber.size(); i++) {
         chamberContent.data[i] << chamber(i);
         int featureCount = WumpusWorld::Chamber::Count(chamber(i).features())
                          + WumpusWorld::Chamber::Count(chamber(i).environment());
@@ -182,7 +182,7 @@ std::string CLIWumpusWorld::getHeadsUpDisplayPercepts() const
 {
     std::stringstream output;
     output << " Percepts ";
-    for (int i = 0; i < _player.size(); i++) {
+    for (std::vector<WumpusWorld::Player*>::size_type i = 0; i < _player.size(); i++) {
         output << "[" << _player[i]->identification() << ": " << WumpusWorld::Player::Sensory(_player[i]->sense()) << "] ";
     }
     output << std::endl;
@@ -193,7 +193,7 @@ std::string CLIWumpusWorld::getHeadsUpDisplayInventories() const
 {
     std::stringstream output;
     output << "Inventory ";
-    for (int i = 0; i < _player.size(); i++) {
+    for (std::vector<WumpusWorld::Player*>::size_type i = 0; i < _player.size(); i++) {
         output << "[" << _player[i]->identification() << ": " << _player[i]->inventory() << "] ";
     }
     output << std::endl;
@@ -204,7 +204,7 @@ std::string CLIWumpusWorld::getHeadsUpDisplayScores() const
 {
     std::stringstream output;
     output << "    Score ";
-    for (int i = 0; i < _player.size(); i++) {
+    for (std::vector<WumpusWorld::Player*>::size_type i = 0; i < _player.size(); i++) {
         output << "[" << _player[i]->identification() << ": " << _player[i]->score() << "] ";
     }
     output << std::endl;
@@ -264,7 +264,7 @@ std::string CLIWumpusWorld::getResults() const
     std::cout << "Final Score ";
     std::vector<int> score = getFinalScores();
     
-    for (int i = 0; i < score.size(); i++) {
+    for (std::vector<int>::size_type i = 0; i < score.size(); i++) {
         std::cout << '[' << _player[i]->identification() << ": " << score[i] << "] ";
     }
     

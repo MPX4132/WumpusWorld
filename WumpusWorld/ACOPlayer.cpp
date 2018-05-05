@@ -94,7 +94,7 @@ ACOPlayer::Edge::Edge(
 					  WumpusWorld::Chamber const *nodeA,
 					  WumpusWorld::Chamber const *nodeB,
 					  const float weigth):
-nodeA(nodeA), nodeB(nodeB), weight(weigth)
+weight(weigth), nodeA(nodeA), nodeB(nodeB)
 {
 }
 
@@ -157,7 +157,7 @@ WumpusWorld::Chamber *ACOPlayer::Ant::Ant::_next() const
 	if (candidate.empty()) return nullptr;
 
 	// Calculate the probability of each candidate in order.
-	for (int i = 0; i < candidate.size(); i++) {
+	for (Chambers::size_type i = 0; i < candidate.size(); i++) {
 		probability[i] = _t(candidate[i]) * (static_cast<float>(1) / std::pow(_h(candidate[i]), ACOPlayer::Beta));
 	}
 
@@ -229,7 +229,7 @@ float ACOPlayer::Ant::_h(WumpusWorld::Chamber const * const target) const
 ACOPlayer::Ant::Ant(WumpusWorld::Chamber * const start,
 					WumpusWorld::Chamber * const end,
 					ACOPlayer::Edges &edges):
-_start(start), _end(end), _edges(edges)
+_edges(edges), _start(start), _end(end)
 {
 	static bool seeded = false;
 	if (!seeded) {
@@ -239,7 +239,7 @@ _start(start), _end(end), _edges(edges)
 }
 
 ACOPlayer::Ant::Ant(const ACOPlayer::Ant &ant):
-_start(ant._start), _end(ant._end), _edges(ant._edges)
+_edges(ant._edges), _start(ant._start), _end(ant._end)
 {
 	static bool seeded = false;
 	if (!seeded) {
