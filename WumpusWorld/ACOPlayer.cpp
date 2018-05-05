@@ -40,7 +40,7 @@ WumpusWorld::Player::Configuration ACOPlayer::nextMove()
 
 bool ACOPlayer::finished() const
 {
-	return _inventory.contains(WumpusWorld::Item::Gold);
+    return _inventory.contains(WumpusWorld::Inventory::Item::Gold);
 }
 
 void ACOPlayer::_resolvePath()

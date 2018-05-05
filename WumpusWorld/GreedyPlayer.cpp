@@ -41,7 +41,7 @@ WumpusWorld::Player::Configuration GreedyPlayer::nextMove()
 
 bool GreedyPlayer::finished() const
 {
-    return _inventory.contains(WumpusWorld::Item::Gold);
+    return _inventory.contains(WumpusWorld::Inventory::Item::Gold);
 }
 
 GreedyPlayer::GreedyPlayer(WumpusWorld::Player::Configuration const configuration, WumpusWorld::Chamber const *const destination):

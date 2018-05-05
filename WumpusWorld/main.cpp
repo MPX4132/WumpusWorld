@@ -10,6 +10,7 @@
 #include <fstream>
 #include "PTWumpusWorld.hpp"
 #include "ACOPlayer.hpp"
+#include "AStarPlayer.hpp"
 
 int main(int argc, const char * argv[]) {
     std::fstream file((argc > 1)? argv[1] : "wumpus_2.txt");
@@ -18,7 +19,7 @@ int main(int argc, const char * argv[]) {
 	WumpusWorld::Configuration layout(file);
 
     // Check if the loaded configuration is valid. If invalid, abort.
-    if (!layout.good())
+    if (!layout.valid())
     {
         std::cout << "Invalid configuration, aborting!" << std::endl;
         return 1;
@@ -26,23 +27,25 @@ int main(int argc, const char * argv[]) {
 
 	// Prompt user for starting and ending coordinates.
 	int start[2], end[2];
-	std::cout << "Enter starting coordinates (0-" << layout.size << ") separated by space: ";
+	std::cout << "Enter starting coordinates (0-" << layout.size - 1 << ") separated by space: ";
 	std::cin >> start[0] >> start[1];
 
-	std::cout << "Enter ending coordinates (0-" << layout.size << ") separated by space: ";
+	std::cout << "Enter ending coordinates (0-" << layout.size - 1 << ") separated by space: ";
 	std::cin >> end[0] >> end[1];
 
     // Set entry and gold locations to configuration.
 	layout.entry = WumpusWorld::Coordinate::Reference(layout.size, WumpusWorld::Coordinate(start[0], start[1]));
 	layout.gold = WumpusWorld::Coordinate::Reference(layout.size, WumpusWorld::Coordinate(end[0], end[1]));
 
-
 	// Generate the world with loaded configuration.
 	PTWumpusWorld world(layout);
 
 	// Create and insert the player into the world.
-	ACOPlayer player(WumpusWorld::Player::Configuration("ACO"), world.goldChamber());
-	world.addPlayer(&player);
+    AStarPlayer player1(WumpusWorld::Player::Configuration("A-*"), world.goldChamber());
+	//ACOPlayer player2(WumpusWorld::Player::Configuration("ACO"), world.goldChamber());
+
+	world.addPlayer(&player1);
+    //world.addPlayer(&player2);
 
     world.run();
 

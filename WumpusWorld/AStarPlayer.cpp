@@ -27,7 +27,7 @@ WumpusWorld::Player::Configuration AStarPlayer::nextMove()
 
 bool AStarPlayer::finished() const
 {
-	return _inventory.contains(WumpusWorld::Item::Gold);
+    return _inventory.contains(WumpusWorld::Inventory::Item::Gold);
 }
 
 bool AStarPlayer::Queue::Node::operator<(AStarPlayer::Queue::Node const &that) const

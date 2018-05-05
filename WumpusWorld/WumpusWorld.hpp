@@ -15,6 +15,7 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
+#include <map>
 #include <cmath>
 
 
@@ -38,15 +39,6 @@ public:
         NorthWest
     };
 
-
-    // These are all the valid items in the world, including a special "item",
-	// Air, that is automatically ignored upon storage or pickup.
-    enum Item {
-        Air, // Ignored, by default
-        Bow,
-        Gold
-    };
-    
     
     // This class defines a coordinate pair, representing a point in the x axis,
     // and a point in the y axis of a two dimensional plane.
@@ -85,7 +77,7 @@ public:
         int gold;				// The index of the chamber that contains
         int wumpus;				// The inddx of the chamber where the wumpus resides
         
-        bool good() const;		// Checks whether the configuration is valid
+        bool valid() const;		// Checks whether the configuration is valid
         
         
         
@@ -98,13 +90,22 @@ public:
 	// it acts as a storage containing all items the entity holds.
     class Inventory {
     public:
+        // These are all the valid items in the world, including a special "item",
+        // Air, that is automatically ignored upon storage or pickup.
+        enum Item {
+            Air, // Ignored, by default
+            Bow,
+            Gold
+        };
+
+        static std::vector<std::string> const ItemIdentiy;
+
         friend std::istream& operator>>(std::istream& is, Inventory &inventory);
         friend std::ostream& operator<<(std::ostream& os, Inventory const &inventory);
         
         bool push(Item const item);
         Item pop(Item const item);
         Item pop();
-        Item peek(int const index) const;
         
         bool contains(Item const item) const;
         
@@ -117,8 +118,9 @@ public:
         
         
     protected:
-        std::vector<Item> _item;
-        int const _capacity;
+        std::map<Item, int> _items; // Item type : Item Count
+        int const _itemCapacity;
+        int _itemCount;
     };
 
     
@@ -271,7 +273,7 @@ public:
         
         Inventory _inventory;
         Chamber* _chamber;
-        Item _dropped;
+        Inventory::Item _dropped;
         
         int _health;
         int _score;

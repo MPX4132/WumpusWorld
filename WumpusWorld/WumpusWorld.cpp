@@ -75,7 +75,7 @@ WumpusWorld::Coordinate::Coordinate(int const x, int const y)
 // ================================================================
 #pragma mark - Configuration Implementation
 // ================================================================
-bool WumpusWorld::Configuration::good() const
+bool WumpusWorld::Configuration::valid() const
 {
     if (!size) return false;
 
@@ -165,6 +165,12 @@ WumpusWorld::Configuration::~Configuration()
 // ================================================================
 #pragma mark - Inventory Implementation
 // ================================================================
+std::vector<std::string> const WumpusWorld::Inventory::ItemIdentiy({
+    "Air",
+    "Bow",
+    "Gold"
+});
+
 std::istream& operator>>(std::istream& is, WumpusWorld::Inventory &inventory)
 {
     // Implement later
@@ -173,91 +179,67 @@ std::istream& operator>>(std::istream& is, WumpusWorld::Inventory &inventory)
 
 std::ostream& operator<<(std::ostream& os, WumpusWorld::Inventory const &inventory)
 {
-    for (WumpusWorld::Item const item : inventory._item) {
-        switch (item) {
-            case WumpusWorld::Item::Air:
-                os << "Air";
-                break;
-                
-            case WumpusWorld::Item::Bow:
-                os << "Bow";
-                break;
-                
-            case WumpusWorld::Item::Gold:
-                os << "Gold";
-                break;
-                
-            default:
-                break;
+    for (std::pair<const WumpusWorld::Inventory::Item, int> const &items : inventory._items)
+    {
+        for (int i = 0; i < items.second; i++)
+        {
+            os << WumpusWorld::Inventory::ItemIdentiy[items.first] << " ";
         }
-        os << ' ';
     }
     return os;
 }
 
-bool WumpusWorld::Inventory::push(WumpusWorld::Item const item)
+bool WumpusWorld::Inventory::push(WumpusWorld::Inventory::Item const item)
 {
-    if (item == Air || _item.size() == _capacity) return false;
-    _item.push_back(item);
+    if (item == Air || _itemCount >= _itemCapacity) return false;
+
+    _items[item]++; // Automatically created if key does not exist.
+    _itemCount++;
+
     return true;
 }
 
-WumpusWorld::Item WumpusWorld::Inventory::pop(WumpusWorld::Item const item)
+WumpusWorld::Inventory::Item WumpusWorld::Inventory::pop(WumpusWorld::Inventory::Item const item)
 {
-    if (empty() || item == Air) return Air;
-    
-    std::vector<Item>::iterator aContainer = std::find(_item.begin(),_item.end(), item);
-        
-    if (aContainer == _item.end()) return Air;
-    
-    _item.erase(aContainer);
-    
+    if (empty() || item == Air || !contains(item)) return Air;
+
+    _items[item]--;
+    _itemCount--;
+
+    if (_items[item] == 0) _items.erase(item);
+
     return item;
 }
 
-WumpusWorld::Item WumpusWorld::Inventory::pop()
+WumpusWorld::Inventory::Item WumpusWorld::Inventory::pop()
 {
     if (empty()) return Air;
-    
-    Item output = _item.back();
-    _item.pop_back();
-    
-    return output;
+    return pop(_items.begin()->first);
 }
 
-WumpusWorld::Item WumpusWorld::Inventory::peek(int const index) const
+bool WumpusWorld::Inventory::contains(WumpusWorld::Inventory::Item const item) const
 {
-    if (index < 0 || index >= _item.size()) return WumpusWorld::Item::Air;
-    
-    return _item[index];
-}
-
-bool WumpusWorld::Inventory::contains(WumpusWorld::Item const item) const
-{
-    for (WumpusWorld::Item const anItem : _item) {
-        if (anItem == item) return true;
-    }
-    
-    return false;
+    return _items.find(item) != _items.end();
 }
 
 int WumpusWorld::Inventory::size() const
 {
-    return static_cast<int>(_item.size());
+    return _itemCount;
 }
 
 int WumpusWorld::Inventory::limit() const
 {
-    return static_cast<int>(_item.capacity());
+    return _itemCapacity;
 }
 
 bool WumpusWorld::Inventory::empty() const
 {
-    return _item.empty();
+    return _items.empty();
 }
 
 WumpusWorld::Inventory::Inventory(int const capacity):
-_capacity(capacity)
+_itemCapacity(capacity),
+_itemCount(0)
 {}
 
 
@@ -355,7 +337,7 @@ WumpusWorld::Chamber::Percept WumpusWorld::Chamber::environment() const
     WumpusWorld::Chamber::Percept percepts = Nothing;
     
     // Set the local percepts
-    if (inventory.contains(WumpusWorld::Item::Gold)) percepts = static_cast<WumpusWorld::Chamber::Percept>(percepts | Glitter);
+    if (inventory.contains(WumpusWorld::Inventory::Item::Gold)) percepts = static_cast<WumpusWorld::Chamber::Percept>(percepts | Glitter);
     
     // Set the side-effect percepts
     for (int orientation = North; orientation <= NorthWest; orientation++) {
@@ -620,7 +602,7 @@ void WumpusWorld::Player::shoot()
     if (!_prepareForActionWithCost(10)) return;
     
     // If you're not holding the bow, you can't shoot!
-    if (!_inventory.contains(WumpusWorld::Item::Bow)) return;
+    if (!_inventory.contains(WumpusWorld::Inventory::Item::Bow)) return;
     
     
     // Reduce ammo (arrows) upon usage... (have only one by default)
@@ -640,7 +622,7 @@ void WumpusWorld::Player::grab()
     if (!_inventory.empty()) return; // Can only hold one thing
     
     // Imply which item to pick up
-    Item item = (_dropped == WumpusWorld::Item::Bow)? WumpusWorld::Item::Gold : WumpusWorld::Item::Bow;
+    Inventory::Item item = (_dropped == WumpusWorld::Inventory::Item::Bow)? WumpusWorld::Inventory::Item::Gold : WumpusWorld::Inventory::Item::Bow;
     
     // The inventory class automatically generates "Air",
     // if the chamber has no items, and "Air" is never stored.
@@ -656,14 +638,11 @@ void WumpusWorld::Player::drop()
 {
     // If can't afford action, skip it
     if (!_prepareForActionWithCost()) return;
-    
-    // Store the first element as the last to be droppedL
-    
-    _dropped = _inventory.peek(0);
-    
-    // The inventory class automatically generates "Air",
-    // if the player has no items, and "Air" is never stored.
-    _chamber->inventory.push(_inventory.pop());
+
+    // Drop an item from player's inventory to the chamber's inventory.
+    // NOTICE: "Air" is returned if inventory's empty, and it's not stored.
+    _dropped = _inventory.pop();
+    _chamber->inventory.push(_dropped);
 }
 
 void WumpusWorld::Player::climb()
@@ -674,7 +653,7 @@ void WumpusWorld::Player::climb()
     // Check that the player can exit the cave
     if (_chamber->contains(Chamber::Feature::Exit)) {
         // If the player is holding the gold, add 1000 points
-        _addPoints(_inventory.contains(Item::Gold)? 1000 : 0);
+        _addPoints(_inventory.contains(Inventory::Item::Gold)? 1000 : 0);
         _finished = true;
     }
 }
@@ -775,7 +754,7 @@ _configuration(configuration),
 _inventory(configuration.space),
 _finished(false),
 _chamber(nullptr),
-_dropped(Air),
+_dropped(Inventory::Item::Air),
 _scream(false),
 _bump(false),
 _health(100),
@@ -783,7 +762,7 @@ _score(0),
 _ammo(1)
 {
     // We'll start out with a bow
-    _inventory.push(WumpusWorld::Item::Bow);
+    _inventory.push(WumpusWorld::Inventory::Item::Bow);
 }
 
 WumpusWorld::Player::~Player()
@@ -950,7 +929,7 @@ _defaultChamber(0)
         _chamber.push_back(new WumpusWorld::Chamber(this, feature[i]));
     }
     
-    _chamber[configuration.gold]->inventory.push(WumpusWorld::Item::Gold);
+    _chamber[configuration.gold]->inventory.push(WumpusWorld::Inventory::Item::Gold);
     
 //    for (WumpusWorld::Player *aPlayer : _player) {
 //        // Note: The player must be oriented BEFORE entering the world,
