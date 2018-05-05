@@ -26,12 +26,12 @@ int main(int argc, const char * argv[]) {
     }
 
 	// Prompt user for starting and ending coordinates.
-	int start[2], end[2];
-	std::cout << "Enter starting coordinates (0-" << layout.size - 1 << ") separated by space: ";
-	std::cin >> start[0] >> start[1];
+    int start[2], end[2];
+    std::cout << "Enter starting coordinates (0-" << layout.size - 1 << ") separated by space: ";
+    std::cin >> start[0] >> start[1];
 
-	std::cout << "Enter ending coordinates (0-" << layout.size - 1 << ") separated by space: ";
-	std::cin >> end[0] >> end[1];
+    std::cout << "Enter ending coordinates (0-" << layout.size - 1 << ") separated by space: ";
+    std::cin >> end[0] >> end[1];
 
     // Set entry and gold locations to configuration.
 	layout.entry = WumpusWorld::Coordinate::Reference(layout.size, WumpusWorld::Coordinate(start[0], start[1]));
@@ -42,10 +42,10 @@ int main(int argc, const char * argv[]) {
 
 	// Create and insert the player into the world.
     AStarPlayer player1(WumpusWorld::Player::Configuration("A-*"), world.goldChamber());
-	//ACOPlayer player2(WumpusWorld::Player::Configuration("ACO"), world.goldChamber());
+	ACOPlayer player2(WumpusWorld::Player::Configuration("ACO"), world.goldChamber());
 
 	world.addPlayer(&player1);
-    //world.addPlayer(&player2);
+    world.addPlayer(&player2);
 
     world.run();
 

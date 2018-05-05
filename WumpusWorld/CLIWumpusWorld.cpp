@@ -108,7 +108,7 @@ void CLIWumpusWorld::run()
     std::cout << getResults();
 }
 
-void CLIWumpusWorld::_processPlayer(int const i)
+void CLIWumpusWorld::_processPlayer(std::vector<Player*>::size_type const i)
 {
     std::cout << "Player " << _player[i]->identification() << " Action: ";
     _player[i]->nextMove();

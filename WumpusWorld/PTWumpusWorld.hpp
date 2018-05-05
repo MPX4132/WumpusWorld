@@ -32,10 +32,10 @@ protected:
     
     void getPlayersOn(ChamberContent &chamberContent) const;
     std::string getHeadsUpDisplay() const;
-    void _processPlayer(int const i);
+    void _processPlayer(std::vector<Player*>::size_type const i);
     std::string getResults() const;
     
-    bool _movedPlayer(int const i) const;
+    bool _movedPlayer(std::vector<Player*>::size_type const i) const;
 };
 
 #endif /* PTWumpusWorld_hpp */

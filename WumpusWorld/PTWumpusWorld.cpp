@@ -18,7 +18,7 @@ void PTWumpusWorld::addPlayer(Player * const player)
     _coordinates[_player.size()-1].push_back(_player[_player.size()-1]->chamber()->coordinate());
 }
 
-void PTWumpusWorld::_processPlayer(int const i)
+void PTWumpusWorld::_processPlayer(std::vector<Player*>::size_type const i)
 {
     _player[i]->nextMove();
     if (_movedPlayer(i))
@@ -67,7 +67,7 @@ std::string PTWumpusWorld::getResults() const
     return output.str();
 }
 
-bool PTWumpusWorld::_movedPlayer(int const i) const
+bool PTWumpusWorld::_movedPlayer(std::vector<Player*>::size_type const i) const
 {
     return _coordinates[i].back() != _player[i]->chamber()->coordinate();
 }

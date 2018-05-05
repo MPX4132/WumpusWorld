@@ -852,7 +852,7 @@ bool WumpusWorld::playable() const
 {
     // If at least one player can play, then keep the world turning!
     for (WumpusWorld::Player const * const aPlayer : _player) {
-        if (!aPlayer->finished()) return true;
+        if (!aPlayer->finished() && aPlayer->alive()) return true;
     }
     return false;
 }

@@ -74,7 +74,7 @@ protected:
     virtual std::string getResults() const;
     virtual std::vector<int> getFinalScores() const;
     
-    virtual void _processPlayer(int const i);
+    virtual void _processPlayer(std::vector<Player*>::size_type const i);
 };
 
 #endif /* CLIWumpusWorld_hpp */
