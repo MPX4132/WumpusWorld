@@ -50,11 +50,22 @@ void ACOPlayer::_resolvePath()
     Edges edges;
 
     for (int generation = 0; generation < ACOPlayer::Generations; generation++) {
+#ifdef ACO_GENERATIONS_CONVERGENCE_LOG
+        std::cout << "[Ant generation " << generation << "] length: ";
+#endif
         Ants ants(10, Ant(chamber(), _destination, edges));
 
         for (Ant& ant : ants) {
+#ifdef ACO_GENERATIONS_CONVERGENCE_LOG
+            Chambers antTour = ant.tour();
+            std::cout << antTour.size() << " ";
+#else
             ant.tour();
+#endif
         }
+#ifdef ACO_GENERATIONS_CONVERGENCE_LOG
+        std::cout << std::endl;
+#endif
 
         // Global evaporation
         for (Edge& edge : edges) {

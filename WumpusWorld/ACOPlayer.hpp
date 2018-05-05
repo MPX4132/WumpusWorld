@@ -16,6 +16,8 @@
 #include <algorithm>
 #include "WumpusWorld.hpp"
 
+//#define ACO_GENERATIONS_CONVERGENCE_LOG
+
 // The ACOPlayer class extends the WumpusWorld::Player.
 // The class aims to represent a player capable of following
 // the ant colony optimization algorithm for a valid path to the gold.
@@ -24,10 +26,10 @@
 class ACOPlayer : public WumpusWorld::Player {
 public:
 
-    static const int Generations    = 200;
-    static constexpr float Alpha    = 2.0;
-    static constexpr float Beta     = 1.0;
-    static constexpr float Rho      = 0.25;
+    static const int Generations    = 1000;
+    static constexpr float Alpha    = 2.25;
+    static constexpr float Beta     = 0.30;
+    static constexpr float Rho      = 0.15;
 
     // The following two methods are being overridden to have
     // polymorphism help out with player abstraction. This should
