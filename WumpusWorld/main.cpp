@@ -26,6 +26,7 @@ int main(int argc, const char * argv[]) {
     }
 
     // Prompt user for starting and ending coordinates.
+    //int start[2] = {0, 0}, end[2] = {7, 7};
     int start[2], end[2];
     std::cout << "Enter starting coordinates (0-" << layout.size - 1 << ") separated by space: ";
     std::cin >> start[0] >> start[1];
@@ -40,12 +41,15 @@ int main(int argc, const char * argv[]) {
     // Generate the world with loaded configuration.
     PTWumpusWorld world(layout);
 
+    // Add second gold piece for the second player.
+    world.goldChamber()->inventory.push(WumpusWorld::Inventory::Item::Gold);
+
     // Create and insert the player into the world.
     AStarPlayer player1(WumpusWorld::Player::Configuration("A-*"), world.goldChamber());
-    //ACOPlayer player2(WumpusWorld::Player::Configuration("ACO"), world.goldChamber());
+    ACOPlayer player2(WumpusWorld::Player::Configuration("ACO"), world.goldChamber());
 
     world.addPlayer(&player1);
-    //world.addPlayer(&player2); // WARNING: If you enable both players, there won't be gold for both (infinite loop)!
+    world.addPlayer(&player2);
 
     world.run();
 

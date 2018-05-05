@@ -10,13 +10,15 @@
 
 WumpusWorld::Player::Configuration AStarPlayer::nextMove()
 {
-    // If the algorithm does not have a solution yet, get one.
-    if (_solution.empty()) _resolvePath();
-
+    // If we're at the gold chamber, grab it and finish.
     if (chamber()->contains(WumpusWorld::Chamber::Percept::Glitter)) {
         drop();
         grab();
+        return _configuration;
     }
+
+    // If the algorithm does not have a solution yet, get one.
+    if (_solution.empty()) _resolvePath();
 
     // For each chamber in the solution, step into it every move.
     WumpusWorld::Chamber * const nextChamber = _solution.back();
