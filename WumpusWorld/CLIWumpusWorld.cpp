@@ -13,18 +13,18 @@
 // ================================================================
 void CLIWumpusWorld::ChamberContent::resize(int const capacity) // THIS IS BULLSHIT, GET FREAKING STL SUPPORT
 {
-	std::stringstream *newData = new std::stringstream[capacity]();
+    std::stringstream *newData = new std::stringstream[capacity]();
 
-	if (data) {
-		for (int i = 0; i < this->capacity; i++) {
-			newData[i] << data[i].str();
-		}
+    if (data) {
+        for (int i = 0; i < this->capacity; i++) {
+            newData[i] << data[i].str();
+        }
 
-		delete [] data;
-	}
+        delete [] data;
+    }
 
-	data = newData;
-	this->capacity = capacity;
+    data = newData;
+    this->capacity = capacity;
 }
 
 CLIWumpusWorld::ChamberContent::ChamberContent():
@@ -35,7 +35,7 @@ maxLineCount(0)
 
 CLIWumpusWorld::ChamberContent::~ChamberContent()
 {
-	delete [] data;
+    delete [] data;
 }
 
 
@@ -116,8 +116,8 @@ void CLIWumpusWorld::_processPlayer(std::vector<Player*>::size_type const i)
 
 void CLIWumpusWorld::get(CLIWumpusWorld::ChamberContent &chamberContent) const
 {
-	//chamberContent.data.resize(_chamber.size());
-	chamberContent.resize(static_cast<int>(_chamber.size()));
+    //chamberContent.data.resize(_chamber.size());
+    chamberContent.resize(static_cast<int>(_chamber.size()));
     int maxiumHeight  = 0;
     
     // I'm treating every row of squares as a line that is outputted to the stringstream

@@ -27,7 +27,7 @@ class WumpusWorld {
 public:
 
     // These are the valid orientations of the world, and are enumerated from
-	// 0 - 7 (8 total), going clock-wise (North being 0, and NorthWest being 7).
+    // 0 - 7 (8 total), going clock-wise (North being 0, and NorthWest being 7).
     enum Orientation {
         North,
         NorthEast,
@@ -67,17 +67,17 @@ public:
 
     // This class is designed to represent an initial configuration of the world,
     // as a board confiuration. The constructor takes a file and derives numerical
-	// values representing entities in the world, and initial values.
+    // values representing entities in the world, and initial values.
     class Configuration {
     public:
         int size;               // The size of the board (size by size)
         int entry;              // The starting point of the player
         Orientation orientation;// The starting orientation of the player
-        std::vector<int> pits;	// The indexes of chambers containing a pit
-        int gold;				// The index of the chamber that contains
-        int wumpus;				// The inddx of the chamber where the wumpus resides
+        std::vector<int> pits;    // The indexes of chambers containing a pit
+        int gold;                // The index of the chamber that contains
+        int wumpus;                // The inddx of the chamber where the wumpus resides
         
-        bool valid() const;		// Checks whether the configuration is valid
+        bool valid() const;        // Checks whether the configuration is valid
         
         
         
@@ -87,7 +87,7 @@ public:
 
 
     // This class is designed to serve as the inventory for entities of the world, that is,
-	// it acts as a storage containing all items the entity holds.
+    // it acts as a storage containing all items the entity holds.
     class Inventory {
     public:
         // These are all the valid items in the world, including a special "item",
@@ -125,15 +125,15 @@ public:
 
     
     // This class represents a "Room" within the cave (a chamber). These chambers may have
-	// a multitude of Features, such as a wumpus or a pit. Their environment depends on
-	// their surrounding chambers, which generate "Percepts", and are detetable by the player.
+    // a multitude of Features, such as a wumpus or a pit. Their environment depends on
+    // their surrounding chambers, which generate "Percepts", and are detetable by the player.
     class Chamber {
     public:
 
 
-		// These enumerations are using bit-shifted values so they work with boolean operations.
-		// This simplifies the usage Features and Percepts since the values passed can be multiple
-		// on a single Feature/Percept value.
+        // These enumerations are using bit-shifted values so they work with boolean operations.
+        // This simplifies the usage Features and Percepts since the values passed can be multiple
+        // on a single Feature/Percept value.
         enum Feature {
             Empty           = 0,
             Pit             = 1 << 0,
@@ -162,14 +162,14 @@ public:
         int location() const;
         Coordinate coordinate() const;
         float distanceTo(Chamber const *chamber) const;
-		int eightDistanceTo(Chamber const *chamber) const;
+        int eightDistanceTo(Chamber const *chamber) const;
         
         Feature features() const;
         bool contains(Feature const feature) const;
         Percept environment() const;
         bool contains(Percept const percept) const;
 
-		std::vector<Chamber *> neighbors() const;
+        std::vector<Chamber *> neighbors() const;
 
         bool hit();
         
@@ -189,8 +189,8 @@ public:
 
     
     // This class represents a being (hero), within the world.
-	// The class defines all possible actions and abilities a player is capable
-	// of performing within the world.
+    // The class defines all possible actions and abilities a player is capable
+    // of performing within the world.
     class Player {
     public:
         

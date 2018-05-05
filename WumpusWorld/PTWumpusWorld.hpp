@@ -20,7 +20,7 @@
 // of each player.
 class PTWumpusWorld : public CLIWumpusWorld {
 public:
-	static const bool ShowStep = true;
+    static const bool ShowStep = true;
 
     void addPlayer(Player * const player);
     

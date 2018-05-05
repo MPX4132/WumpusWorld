@@ -24,86 +24,86 @@
 class ACOPlayer : public WumpusWorld::Player {
 public:
 
-	static const int Generations		= 50;
-	static constexpr float Alpha		= 2.0;
-	static constexpr float Beta			= 1.0;
-	static constexpr float Rho			= 0.25;
+    static const int Generations        = 50;
+    static constexpr float Alpha        = 2.0;
+    static constexpr float Beta            = 1.0;
+    static constexpr float Rho            = 0.25;
 
-	// The following two methods are being overridden to have
-	// polymorphism help out with player abstraction. This should
-	// make it easier to write different players that can do different things!
-	Configuration nextMove();
-	bool finished() const;
+    // The following two methods are being overridden to have
+    // polymorphism help out with player abstraction. This should
+    // make it easier to write different players that can do different things!
+    Configuration nextMove();
+    bool finished() const;
 
-	ACOPlayer(Configuration const configuration, WumpusWorld::Chamber *const destination);
-	~ACOPlayer();
+    ACOPlayer(Configuration const configuration, WumpusWorld::Chamber *const destination);
+    ~ACOPlayer();
 
 
 protected:
-	typedef std::vector<WumpusWorld::Chamber *> Chambers;
+    typedef std::vector<WumpusWorld::Chamber *> Chambers;
 
-	class Edge {
-	public:
-		static constexpr float DefaultWeight = 0.1;
+    class Edge {
+    public:
+        static constexpr float DefaultWeight = 0.1;
 
-		float weight;
+        float weight;
 
-		WumpusWorld::Chamber const *nodeA, *nodeB;
+        WumpusWorld::Chamber const *nodeA, *nodeB;
 
-		bool operator==(const Edge& edge) const;
-		bool operator>(const Edge& edge) const;
-		bool operator<(const Edge& edge) const;
+        bool operator==(const Edge& edge) const;
+        bool operator>(const Edge& edge) const;
+        bool operator<(const Edge& edge) const;
 
-		Edge(WumpusWorld::Chamber const *nodeA,
-			 WumpusWorld::Chamber const *nodeB,
-			 const float weight = DefaultWeight);
-	};
+        Edge(WumpusWorld::Chamber const *nodeA,
+             WumpusWorld::Chamber const *nodeB,
+             const float weight = DefaultWeight);
+    };
 
-	typedef std::vector<Edge> Edges;
+    typedef std::vector<Edge> Edges;
 
-	class Ant {
-	public:
-		static std::default_random_engine Randomizer;
+    class Ant {
+    public:
+        static std::default_random_engine Randomizer;
 
-		Chambers tour();
-		void stigmergy();
+        Chambers tour();
+        void stigmergy();
 
-		bool done() const;
+        bool done() const;
 
-		Chambers path() const;
+        Chambers path() const;
 
-		Ant(WumpusWorld::Chamber * const start, WumpusWorld::Chamber * const end, Edges &edges);
-		Ant(const Ant& ant);
+        Ant(WumpusWorld::Chamber * const start, WumpusWorld::Chamber * const end, Edges &edges);
+        Ant(const Ant& ant);
 
-	protected:
-		Chambers _path;
-		Edges &_edges;
-		Edges _edgePath;
+    protected:
+        Chambers _path;
+        Edges &_edges;
+        Edges _edgePath;
 
-		WumpusWorld::Chamber * const _start;
-		WumpusWorld::Chamber * const _end;
-		WumpusWorld::Chamber * _current;
+        WumpusWorld::Chamber * const _start;
+        WumpusWorld::Chamber * const _end;
+        WumpusWorld::Chamber * _current;
 
-		WumpusWorld::Chamber * _next() const;
+        WumpusWorld::Chamber * _next() const;
 
-		std::vector<WumpusWorld::Chamber*> _getUnvisitedNeighbors() const;
+        std::vector<WumpusWorld::Chamber*> _getUnvisitedNeighbors() const;
 
-		// Calculates the probability to move to "target" chamber.
-		float _p(WumpusWorld::Chamber const * const target) const;
+        // Calculates the probability to move to "target" chamber.
+        float _p(WumpusWorld::Chamber const * const target) const;
 
-		// Calculates the amount of pheromone for the edge leading to "target."
-		float _t(WumpusWorld::Chamber const * const target) const;
+        // Calculates the amount of pheromone for the edge leading to "target."
+        float _t(WumpusWorld::Chamber const * const target) const;
 
-		// Calculates the heuristic value for the "target."
-		float _h(WumpusWorld::Chamber const * const target) const;
-	};
+        // Calculates the heuristic value for the "target."
+        float _h(WumpusWorld::Chamber const * const target) const;
+    };
 
-	typedef std::vector<Ant> Ants;
+    typedef std::vector<Ant> Ants;
 
-	std::vector<WumpusWorld::Chamber *> _solution;
-	WumpusWorld::Chamber * const _destination;
-	
-	void _resolvePath();
+    std::vector<WumpusWorld::Chamber *> _solution;
+    WumpusWorld::Chamber * const _destination;
+    
+    void _resolvePath();
 };
 
 

@@ -20,7 +20,7 @@
 // when it's the player's time to make its next move.
 class GreedyPlayer : public WumpusWorld::Player {
 public:
-	
+    
     Configuration nextMove();
     bool finished() const;
     

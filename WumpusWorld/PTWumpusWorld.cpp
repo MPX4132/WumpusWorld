@@ -27,20 +27,20 @@ void PTWumpusWorld::_processPlayer(std::vector<Player*>::size_type const i)
 
 void PTWumpusWorld::getPlayersOn(ChamberContent &chamberContent) const
 {
-	if (playable()) {
-		CLIWumpusWorld::getPlayersOn(chamberContent);
-		return;
-	}
+    if (playable()) {
+        CLIWumpusWorld::getPlayersOn(chamberContent);
+        return;
+    }
 
-	for (std::vector<WumpusWorld::Player*>::size_type i = 0; i < _player.size(); i++) {
-		int count = 0;
-		for (Coordinate const &coordinate : _coordinates[i]) {
-			std::stringstream &content = chamberContent.data[WumpusWorld::Coordinate::Reference(size(), coordinate)];
-			content << _player[i]->identification();
-			if (PTWumpusWorld::ShowStep) content << "-" << count++;
-			content << std::endl;
-		}
-	}
+    for (std::vector<WumpusWorld::Player*>::size_type i = 0; i < _player.size(); i++) {
+        int count = 0;
+        for (Coordinate const &coordinate : _coordinates[i]) {
+            std::stringstream &content = chamberContent.data[WumpusWorld::Coordinate::Reference(size(), coordinate)];
+            content << _player[i]->identification();
+            if (PTWumpusWorld::ShowStep) content << "-" << count++;
+            content << std::endl;
+        }
+    }
 
 }
 
