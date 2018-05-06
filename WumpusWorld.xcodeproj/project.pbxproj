@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C30325C01C7A67F400A7C8CC /* wumpus_2.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = C30325BF1C7A679100A7C8CC /* wumpus_2.txt */; };
 		C318E0AB1CC5FB59001DB093 /* ACOPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C318E0A91CC5FB59001DB093 /* ACOPlayer.cpp */; };
+		C3245DC2209E90EF00E689C9 /* wumpus_3.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3245DC1209E90C500E689C9 /* wumpus_3.txt */; };
 		C33BBCC11C7BD96400863E22 /* CLIWumpusWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C33BBCBF1C7BD96400863E22 /* CLIWumpusWorld.cpp */; };
 		C3628D751C668D380033E9A1 /* WumpusWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3628D731C668D380033E9A1 /* WumpusWorld.cpp */; };
 		C3A5DB881C5E9AE40001FA22 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A5DB871C5E9AE40001FA22 /* main.cpp */; };
@@ -25,6 +26,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				C3245DC2209E90EF00E689C9 /* wumpus_3.txt in CopyFiles */,
 				C30325C01C7A67F400A7C8CC /* wumpus_2.txt in CopyFiles */,
 				C3A5DBA91C5F0DE70001FA22 /* wumpus_1.txt in CopyFiles */,
 			);
@@ -36,6 +38,7 @@
 		C30325BF1C7A679100A7C8CC /* wumpus_2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wumpus_2.txt; sourceTree = "<group>"; };
 		C318E0A91CC5FB59001DB093 /* ACOPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ACOPlayer.cpp; sourceTree = "<group>"; };
 		C318E0AA1CC5FB59001DB093 /* ACOPlayer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ACOPlayer.hpp; sourceTree = "<group>"; };
+		C3245DC1209E90C500E689C9 /* wumpus_3.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wumpus_3.txt; sourceTree = "<group>"; };
 		C33BBCBF1C7BD96400863E22 /* CLIWumpusWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CLIWumpusWorld.cpp; sourceTree = "<group>"; };
 		C33BBCC01C7BD96400863E22 /* CLIWumpusWorld.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CLIWumpusWorld.hpp; sourceTree = "<group>"; };
 		C3628D731C668D380033E9A1 /* WumpusWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WumpusWorld.cpp; sourceTree = "<group>"; };
@@ -106,6 +109,7 @@
 		C3D7E0F31FDE384800EE35A4 /* Sample Configurations */ = {
 			isa = PBXGroup;
 			children = (
+				C3245DC1209E90C500E689C9 /* wumpus_3.txt */,
 				C30325BF1C7A679100A7C8CC /* wumpus_2.txt */,
 				C3A5DBA81C5F0DCA0001FA22 /* wumpus_1.txt */,
 			);
