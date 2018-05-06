@@ -27,9 +27,9 @@ class ACOPlayer : public WumpusWorld::Player {
 public:
 
     static const int Generations    = 1000;
-    static constexpr float Alpha    = 2.25;
-    static constexpr float Beta     = 0.30;
-    static constexpr float Rho      = 0.15;
+    static constexpr float Alpha    = 2.00;
+    static constexpr float Beta     = 0.95;
+    static constexpr float Rho      = 0.33;
 
     // The following two methods are being overridden to have
     // polymorphism help out with player abstraction. This should

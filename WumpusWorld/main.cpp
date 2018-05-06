@@ -13,7 +13,7 @@
 #include "AStarPlayer.hpp"
 
 int main(int argc, const char * argv[]) {
-    std::fstream file((argc > 1)? argv[1] : "wumpus_2.txt");
+    std::fstream file((argc > 1)? argv[1] : "wumpus_3.txt");
 
     // Load configuration file from path.
     WumpusWorld::Configuration layout(file);
@@ -21,22 +21,21 @@ int main(int argc, const char * argv[]) {
     // Check if the loaded configuration is valid. If invalid, abort.
     if (!layout.valid())
     {
-        std::cout << "Invalid configuration, aborting!" << std::endl;
+        std::cout << "Aborting due to invalid configuration!" << std::endl;
         return 1;
     }
 
-    // Prompt user for starting and ending coordinates.
-    //int start[2] = {0, 0}, end[2] = {7, 7};
-    int start[2], end[2];
-    std::cout << "Enter starting coordinates (0-" << layout.size - 1 << ") separated by space: ";
-    std::cin >> start[0] >> start[1];
+    // Prompt user for starting and ending coordinates (overwrite configuration entry & exit).
+    //int start[2], end[2];
+    //std::cout << "Enter starting coordinates (0-" << layout.size - 1 << ") separated by space: ";
+    //std::cin >> start[0] >> start[1];
 
-    std::cout << "Enter ending coordinates (0-" << layout.size - 1 << ") separated by space: ";
-    std::cin >> end[0] >> end[1];
+    //std::cout << "Enter ending coordinates (0-" << layout.size - 1 << ") separated by space: ";
+    //std::cin >> end[0] >> end[1];
 
     // Set entry and gold locations to configuration.
-    layout.entry = WumpusWorld::Coordinate::Reference(layout.size, WumpusWorld::Coordinate(start[0], start[1]));
-    layout.gold = WumpusWorld::Coordinate::Reference(layout.size, WumpusWorld::Coordinate(end[0], end[1]));
+    //layout.entry = WumpusWorld::Coordinate::Reference(layout.size, WumpusWorld::Coordinate(start[0], start[1]));
+    //layout.gold = WumpusWorld::Coordinate::Reference(layout.size, WumpusWorld::Coordinate(end[0], end[1]));
 
     // Generate the world with loaded configuration.
     PTWumpusWorld world(layout);
@@ -53,7 +52,7 @@ int main(int argc, const char * argv[]) {
 
     world.run();
 
-    std::cout << "Thank you for playing!" << std::endl;
+    std::cout << "Agents finished playing." << std::endl;
 
     return 0;
 }

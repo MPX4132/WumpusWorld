@@ -1,7 +1,7 @@
 all: Program
 
 compiler = g++
-flags = -std=c++11 -g -Wall -Wno-unknown-pragmas
+flags = -std=c++11 -O3 -Wall -Wno-unknown-pragmas
 
 WumpusWorld.o: WumpusWorld.cpp WumpusWorld.hpp
 	$(compiler) $(flags) -c WumpusWorld.cpp
