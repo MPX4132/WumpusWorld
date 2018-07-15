@@ -18,7 +18,7 @@
 // the greedy approach to getting to a destination. It essentially
 // overwrites a virtual method in the base class that's called
 // when it's the player's time to make its next move.
-class GreedyPlayer : public WumpusWorld::Player {
+class GreedyPlayer : public WumpusWorld::Agent {
 public:
     
     Configuration nextMove();

@@ -8,7 +8,7 @@
 #include "AStarPlayer.hpp"
 
 
-WumpusWorld::Player::Configuration AStarPlayer::nextMove()
+WumpusWorld::Agent::Configuration AStarPlayer::nextMove()
 {
     // If we're at the gold chamber, grab it and finish.
     if (chamber()->contains(WumpusWorld::Chamber::Percept::Glitter)) {
@@ -80,7 +80,7 @@ int AStarPlayer::Queue::Node::gCost(AStarPlayer::Queue::Node const *parent) cons
 
 int AStarPlayer::Queue::Node::hCost() const
 {
-    return chamber->eightDistanceTo(_destination) * 5;
+    return static_cast<int>(chamber->eightDistanceTo(_destination) * 5);
 }
 
 int AStarPlayer::Queue::Node::fCost() const
@@ -220,7 +220,7 @@ void AStarPlayer::_resolvePath()
 
 
 AStarPlayer::AStarPlayer(Configuration const configuration, WumpusWorld::Chamber const * const destination):
-WumpusWorld::Player(configuration),
+WumpusWorld::Agent(configuration),
 _destination(destination)
 {}
 

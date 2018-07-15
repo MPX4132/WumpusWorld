@@ -11,7 +11,7 @@
 // ================================================================
 #pragma mark - GreedyPlayer Implementation
 // ================================================================
-WumpusWorld::Player::Configuration GreedyPlayer::nextMove()
+WumpusWorld::Agent::Configuration GreedyPlayer::nextMove()
 {
     // Check if the chamber contains gold
     if (chamber()->contains(WumpusWorld::Chamber::Glitter)) {
@@ -44,8 +44,8 @@ bool GreedyPlayer::finished() const
     return _inventory.contains(WumpusWorld::Inventory::Item::Gold);
 }
 
-GreedyPlayer::GreedyPlayer(WumpusWorld::Player::Configuration const configuration, WumpusWorld::Chamber const *const destination):
-WumpusWorld::Player(configuration),
+GreedyPlayer::GreedyPlayer(WumpusWorld::Agent::Configuration const configuration, WumpusWorld::Chamber const *const destination):
+WumpusWorld::Agent(configuration),
 _destination(destination)
 {
 }

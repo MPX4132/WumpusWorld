@@ -19,15 +19,14 @@
 #include <cmath>
 
 
-// This is the base class for the world and contains every subclass within it.
-// I've created the classes that belong to WumpusWorld nested within it since
-// they're used exclusively by the class itself and having nested classes
-// creates an isolated namespace, which is considered good practice!
+// The WumpusWorld class represents a virtual turn-based sandbox for AI agents.
+// Agents wishing to interact with the world must subclass Agent and implement
+// relevant virtual methods to successfully interact with the world.
 class WumpusWorld {
 public:
 
-    // These are the valid orientations of the world, and are enumerated from
-    // 0 - 7 (8 total), going clock-wise (North being 0, and NorthWest being 7).
+    // The following are the valid orientations of the world, enumerated
+    // clock-wise, 0 - 7 (8 total), North being 0, and NorthWest being 7.
     enum Orientation {
         North,
         NorthEast,
@@ -39,61 +38,68 @@ public:
         NorthWest
     };
 
-    
-    // This class defines a coordinate pair, representing a point in the x axis,
-    // and a point in the y axis of a two dimensional plane.
-    struct Coordinate {
-        int x, y;
+    class Chamber;
+
+    // The Coordinates struct defines a coordinate pair in the world,
+    // defining the x and y axis specifying a "Chamber" of the world.
+    struct Coordinates {
+        typedef long Domain;
+
+        Domain x, y;
         
-        friend std::istream &operator>>(std::istream& is, Coordinate &coordinate);
-        friend std::ostream &operator<<(std::ostream& os, Coordinate const &coordinate);
+        friend std::istream &operator>>(std::istream& is, Coordinates &coordinates);
+        friend std::ostream &operator<<(std::ostream& os, Coordinates const &coordinates);
         
-        int xDifference(Coordinate const &coordinate) const;
-        int yDifference(Coordinate const &coordinate) const;
+        Domain xDistanceTo(Coordinates const &coordinates) const;
+        Domain yDistanceTo(Coordinates const &coordinates) const;
         
-        //Coordinate operator+(Coordinate const &coordinate) const;
-        Coordinate operator-(Coordinate const &coordinate) const;
-        bool operator==(Coordinate const &coordinate) const;
-        bool operator!=(Coordinate const &coordinate) const;
+        Coordinates operator+(Coordinates const &coordinates) const;
+        Coordinates operator-(Coordinates const &coordinates) const;
+
+        bool operator==(Coordinates const &coordinates) const;
+        bool operator!=(Coordinates const &coordinates) const;
         
-        float distanceTo(Coordinate const &coordinate) const;
+        float distanceTo(Coordinates const &coordinates) const;
         
-        static Coordinate Dereference(int const size, int const coordinate);
-        static int Reference(int const size, Coordinate const coordinate);
+        static Coordinates Dereference(Domain const size, Domain const coordinates);
+        static Domain Reference(Domain const size, Coordinates const coordinates);
         
-        Coordinate(int const x = 0, int const y = 0);
+        Coordinates(Domain const x = 0, Domain const y = 0);
     };
 
 
-    // This class is designed to represent an initial configuration of the world,
-    // as a board confiuration. The constructor takes a file and derives numerical
-    // values representing entities in the world, and initial values.
-    class Configuration {
-    public:
-        int size;               // The size of the board (size by size)
-        int entry;              // The starting point of the player
-        Orientation orientation;// The starting orientation of the player
-        std::vector<int> pits;    // The indexes of chambers containing a pit
-        int gold;                // The index of the chamber that contains
-        int wumpus;                // The inddx of the chamber where the wumpus resides
-        
-        bool valid() const;        // Checks whether the configuration is valid
-        
-        
+    // The following struct represents an initial configuration of the world.
+    // A configuration is taken by the constructor and loads values per line.
+    // The configuration file must follow the following format (omit line #):
+    // Line 1: <world size (squared)>
+    // Line 2: <agent entry X> <agent entry Y>
+    // Line 3: <agent orientation>
+    // Line 4: [ <pit1 X> <pit1 Y> [ <pit2 X> <pit2 Y> [ ... ] ] ]
+    // Line 5: <gold location X> <gold location Y>
+    // Line 6: <Wumpus location X> <Wumpus location Y>
+    struct Configuration {
+        Coordinates::Domain size;               // Size of the board (will be squared)
+        Coordinates::Domain entry;              // Starting point of the agent
+        Orientation orientation;                // Starting orientation of the agent
+        std::vector<Coordinates::Domain> pits;  // Coordinates of chambers containing a pit
+        Coordinates::Domain gold;               // Coordinates of the chamber that contains gold
+        Coordinates::Domain wumpus;             // Coordinates of the chamber where the wumpus resides
+
+        bool valid() const;
         
         Configuration(std::fstream &file);
-        ~Configuration();
     };
 
 
-    // This class is designed to serve as the inventory for entities of the world, that is,
-    // it acts as a storage containing all items the entity holds.
+    // The Inventory class serves as the inventory for agents and world chambers.
+    // The class represents a type of storage for both, agents and chambers.
+    // Anything that can be had/held/hold must be stored in an inventory.
     class Inventory {
     public:
-        // These are all the valid items in the world, including a special "item",
-        // Air, that is automatically ignored upon storage or pickup.
+        // The following are valid items in the world, including a special "item",
+        // Air, that is automatically ignored upon storage or withdrawl.
         enum Item {
-            Air, // Ignored, by default
+            Air, // Ignored by the inventory by default.
             Bow,
             Gold
         };
@@ -110,7 +116,7 @@ public:
         bool contains(Item const item) const;
         
         int size() const;
-        int limit() const;
+        int capacity() const;
         
         bool empty() const;
         
@@ -118,22 +124,59 @@ public:
         
         
     protected:
-        std::map<Item, int> _items; // Item type : Item Count
+        std::map<Item, unsigned long> _items; // Item type : Item Count
         int const _itemCapacity;
         int _itemCount;
     };
 
-    
-    // This class represents a "Room" within the cave (a chamber). These chambers may have
-    // a multitude of Features, such as a wumpus or a pit. Their environment depends on
-    // their surrounding chambers, which generate "Percepts", and are detetable by the player.
+
+
+//    // The class below represents a Zone navigatable by agents within the world.
+//    // These zones may have a multitude of Features, such as a Wumpus, or a Pit.
+//    // Their environment depends on neighboring zones which generate "Percepts"
+//    // that are detectable by agents.
+//    class Zone {
+//    public:
+//        // The following enumerations are using bit-shifted values to make boolean
+//        // operations easy, simplifying the usage of Features and Percepts, since
+//        // multiple may be passed from a single Feature/Percept value.
+//        enum Feature {
+//            Empty           = 0,
+//            Pit             = 1 << 0,
+//            LivingWumpus    = 1 << 1,
+//            DeadWumpus      = 1 << 2,
+//            Exit            = 1 << 3
+//        };
+//
+//        enum Percept {
+//            Nothing     = 0,
+//            Stench      = 1 << 0,
+//            Breeze      = 1 << 1,
+//            Glitter     = 1 << 2,
+//            Bump        = 1 << 3,
+//            Scream      = 1 << 4
+//        };
+//
+//        Zone();
+//        ~Zone();
+//
+//    protected:
+//        void _addFeature(Feature const feature);
+//        Feature _removeFeature(Feature const feature);
+//
+//    private:
+//        Feature _feature;
+//    };
+
+    // The class below represents a Chamber navigatable by agents within the world.
+    // These chambers may have a multitude of Features, such as a Wumpus, or a Pit.
+    // Their environment depends on neighboring chambers which generate "Percepts"
+    // that are detectable by agents.
     class Chamber {
     public:
-
-
-        // These enumerations are using bit-shifted values so they work with boolean operations.
-        // This simplifies the usage Features and Percepts since the values passed can be multiple
-        // on a single Feature/Percept value.
+        // The following enumerations are using bit-shifted values to make boolean
+        // operations easy, simplifying the usage of Features and Percepts, since
+        // multiple may be passed from a single Feature/Percept value.
         enum Feature {
             Empty           = 0,
             Pit             = 1 << 0,
@@ -151,18 +194,17 @@ public:
             Scream      = 1 << 4
         };
         
+        Inventory inventory;
+
         friend std::istream& operator>>(std::istream& is, Chamber &chamber);
         friend std::ostream& operator<<(std::ostream& os, Chamber const &chamber);
-        
-        
-        Inventory inventory;
-        
+
         Chamber* passage(Orientation const orientation) const;
         
         int location() const;
-        Coordinate coordinate() const;
+        Coordinates coordinates() const;
         float distanceTo(Chamber const *chamber) const;
-        int eightDistanceTo(Chamber const *chamber) const;
+        Coordinates::Domain eightDistanceTo(Chamber const *chamber) const;
         
         Feature features() const;
         bool contains(Feature const feature) const;
@@ -189,9 +231,9 @@ public:
 
     
     // This class represents a being (hero), within the world.
-    // The class defines all possible actions and abilities a player is capable
+    // The class defines all possible actions and abilities a agent is capable
     // of performing within the world.
-    class Player {
+    class Agent {
     public:
         
         enum Side {
@@ -205,25 +247,25 @@ public:
             static int const DefaultSpace       = 1;
             
             
-            std::string identification; // A string used to identify the player.
+            std::string identification; // A string used to identify the agent.
             int space;                  // The inventory limit space.
-            int turnCost;               // Cost for making the player change orientation by 45 degrees.
+            int turnCost;               // Cost for making the agent change orientation by 45 degrees.
             int cost;                   // A generic cost value applied to every other action.
             
-            Orientation orientation;    // The heading the player faces in the world.
-            int location;               // A location in the world.
+            Orientation orientation;    // The heading the agent faces in the world.
+            Coordinates::Domain location;               // A location in the world.
             
             Configuration(std::string const identification = "",
                           int const space = DefaultSpace,
                           int const cost = DefaultActionCost,
                           int const turnCost = DefaultActionCost,
                           Orientation const orientation = Orientation::North,
-                          int const location = 0
+                          Coordinates::Domain const location = 0
                           );
         };
         
-        friend std::istream& operator>>(std::istream& is, Player &player);
-        friend std::ostream& operator<<(std::ostream& os, Player const &player);
+        friend std::istream& operator>>(std::istream& is, Agent &agent);
+        friend std::ostream& operator<<(std::ostream& os, Agent const &agent);
         
         static std::string Sensory(Chamber::Percept percept);
         
@@ -235,7 +277,7 @@ public:
         
         virtual int score() const;
         
-        int location() const;
+        Coordinates::Domain location() const;
         
         Orientation orientation() const;
         void orient(Orientation const orientation);
@@ -264,8 +306,8 @@ public:
         
         virtual Configuration nextMove();
         
-        Player(Configuration const configuration = Configuration());
-        virtual ~Player();
+        Agent(Configuration const configuration = Configuration());
+        virtual ~Agent();
         
         
     protected:
@@ -302,7 +344,7 @@ public:
     
     virtual bool playable() const; // Checks if the game is not over
     
-    virtual void addPlayer(Player * const player);
+    virtual void addAgent(Agent * const agent);
     
     int size() const;
     
@@ -319,16 +361,16 @@ protected:
     static Edge const Left      = 8;
     
     Orientation _defaultOrientation;
-    int _defaultChamber;
+    WumpusWorld::Coordinates::Domain _defaultChamber;
     
-    std::vector<Player*> _player;
+    std::vector<Agent*> _agent;
     std::vector<Chamber*> _chamber;
     
     int _locate(Chamber const *chamber) const;
     Edge _edge(int const position) const;
     
     virtual void _processRound();
-    virtual void _processPlayer(std::vector<Player*>::size_type const i);
+    virtual void _processPlayer(std::vector<Agent*>::size_type const i);
 };
 
 #endif

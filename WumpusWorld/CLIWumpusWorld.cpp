@@ -51,7 +51,7 @@ std::ostream& operator<<(std::ostream& os, CLIWumpusWorld const &wumpusWorld)
         os << wumpusWorld.getRowSeparator();
         os << wumpusWorld.getRowSpacer();
         
-        for (std::vector<WumpusWorld::Player*>::size_type x = 0; x < chamberContent.maxLineCount + wumpusWorld._player.size() + 1; x++) {
+        for (std::vector<WumpusWorld::Agent*>::size_type x = 0; x < chamberContent.maxLineCount + wumpusWorld._agent.size() + 1; x++) {
             for (int y = 0; y < columnCount; y++) {
                 int const index = columnCount * (row+1) - columnCount + y;
                 
@@ -95,10 +95,10 @@ void CLIWumpusWorld::run()
     std::cout << getResults();
 }
 
-void CLIWumpusWorld::_processPlayer(std::vector<Player*>::size_type const i)
+void CLIWumpusWorld::_processPlayer(std::vector<Agent*>::size_type const i)
 {
-    std::cout << "Player " << _player[i]->identification() << " Action: ";
-    _player[i]->nextMove();
+    std::cout << "Player " << _agent[i]->identification() << " Action: ";
+    _agent[i]->nextMove();
 }
 
 void CLIWumpusWorld::get(CLIWumpusWorld::ChamberContent &chamberContent) const
@@ -123,10 +123,10 @@ void CLIWumpusWorld::get(CLIWumpusWorld::ChamberContent &chamberContent) const
 
 void CLIWumpusWorld::getPlayersOn(CLIWumpusWorld::ChamberContent &chamberContent) const
 {
-    for (WumpusWorld::Player const * const aPlayer : _player) {
+    for (WumpusWorld::Agent const * const aPlayer : _agent) {
         chamberContent.data[aPlayer->location()] << "[" << aPlayer->identification() << "]";
         
-        // If the player is dead, show it and skip its information.
+        // If the agent is dead, show it and skip its information.
         if (!aPlayer->alive()) {
             chamberContent.data[aPlayer->location()] << "-DEAD" << std::endl;
             continue;
@@ -169,8 +169,8 @@ std::string CLIWumpusWorld::getHeadsUpDisplayPercepts() const
 {
     std::stringstream output;
     output << " Percepts ";
-    for (std::vector<WumpusWorld::Player*>::size_type i = 0; i < _player.size(); i++) {
-        output << "[" << _player[i]->identification() << ": " << WumpusWorld::Player::Sensory(_player[i]->sense()) << "] ";
+    for (std::vector<WumpusWorld::Agent*>::size_type i = 0; i < _agent.size(); i++) {
+        output << "[" << _agent[i]->identification() << ": " << WumpusWorld::Agent::Sensory(_agent[i]->sense()) << "] ";
     }
     output << std::endl;
     return output.str();
@@ -180,8 +180,8 @@ std::string CLIWumpusWorld::getHeadsUpDisplayInventories() const
 {
     std::stringstream output;
     output << "Inventory ";
-    for (std::vector<WumpusWorld::Player*>::size_type i = 0; i < _player.size(); i++) {
-        output << "[" << _player[i]->identification() << ": " << _player[i]->inventory() << "] ";
+    for (std::vector<WumpusWorld::Agent*>::size_type i = 0; i < _agent.size(); i++) {
+        output << "[" << _agent[i]->identification() << ": " << _agent[i]->inventory() << "] ";
     }
     output << std::endl;
     return output.str();
@@ -191,8 +191,8 @@ std::string CLIWumpusWorld::getHeadsUpDisplayScores() const
 {
     std::stringstream output;
     output << "    Score ";
-    for (std::vector<WumpusWorld::Player*>::size_type i = 0; i < _player.size(); i++) {
-        output << "[" << _player[i]->identification() << ": " << _player[i]->score() << "] ";
+    for (std::vector<WumpusWorld::Agent*>::size_type i = 0; i < _agent.size(); i++) {
+        output << "[" << _agent[i]->identification() << ": " << _agent[i]->score() << "] ";
     }
     output << std::endl;
     return output.str();
@@ -240,11 +240,11 @@ std::string CLIWumpusWorld::getResults() const
 {
     std::stringstream output;
     
-    if (_player.size() == 1 && !_player[0]->alive()) {
-        if (_chamber[_player[0]->location()]->contains(WumpusWorld::Chamber::Feature::LivingWumpus))
+    if (_agent.size() == 1 && !_agent[0]->alive()) {
+        if (_chamber[_agent[0]->location()]->contains(WumpusWorld::Chamber::Feature::LivingWumpus))
             output << "[ YOU WERE EATEN BY THE WUMPUS! ]" << std::endl;
         
-        if (_chamber[_player[0]->location()]->contains(WumpusWorld::Chamber::Feature::Pit))
+        if (_chamber[_agent[0]->location()]->contains(WumpusWorld::Chamber::Feature::Pit))
             output << "[ YOU FELL TO YOUR DEATH! ]" << std::endl;
     }
     
@@ -252,7 +252,7 @@ std::string CLIWumpusWorld::getResults() const
     std::vector<int> score = getFinalScores();
     
     for (std::vector<int>::size_type i = 0; i < score.size(); i++) {
-        std::cout << '[' << _player[i]->identification() << ": " << score[i] << "] ";
+        std::cout << '[' << _agent[i]->identification() << ": " << score[i] << "] ";
     }
     
     std::cout << std::endl;
@@ -262,7 +262,7 @@ std::string CLIWumpusWorld::getResults() const
 std::vector<int> CLIWumpusWorld::getFinalScores() const
 {
     std::vector<int> results;
-    for (WumpusWorld::Player const * const aPlayer : _player) {
+    for (WumpusWorld::Agent const * const aPlayer : _agent) {
         results.push_back(aPlayer->score());
     }
     return results;

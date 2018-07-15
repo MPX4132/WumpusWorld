@@ -11,65 +11,68 @@
 // ================================================================
 #pragma mark - Coordinates Implementation
 // ================================================================
-std::istream &operator>>(std::istream& is, WumpusWorld::Coordinate &coordinate)
+std::istream &operator>>(std::istream& is, WumpusWorld::Coordinates &coordinates)
 {
-    is >> coordinate.x;
-    is >> coordinate.y;
+    is >> coordinates.x;
+    is >> coordinates.y;
     return is;
 }
 
-std::ostream &operator<<(std::ostream& os, WumpusWorld::Coordinate const &coordinates)
+std::ostream &operator<<(std::ostream& os, WumpusWorld::Coordinates const &coordinates)
 {
     os << "(" << coordinates.x << ", " << coordinates.y << ")";
     return os;
 }
 
-int WumpusWorld::Coordinate::xDifference(WumpusWorld::Coordinate const &coordinate) const
+WumpusWorld::Coordinates::Domain WumpusWorld::Coordinates::xDistanceTo(WumpusWorld::Coordinates const &coordinates) const
 {
-    return x - coordinate.x;
+    return x - coordinates.x;
 }
 
-int WumpusWorld::Coordinate::yDifference(WumpusWorld::Coordinate const &coordinate) const
+WumpusWorld::Coordinates::Domain WumpusWorld::Coordinates::yDistanceTo(WumpusWorld::Coordinates const &coordinates) const
 {
-    return y - coordinate.y;
+    return y - coordinates.y;
 }
 
-float WumpusWorld::Coordinate::distanceTo(WumpusWorld::Coordinate const &coordinate) const
+float WumpusWorld::Coordinates::distanceTo(WumpusWorld::Coordinates const &coordinates) const
 {
-    return sqrt(std::pow(xDifference(coordinate), 2) +
-                std::pow(yDifference(coordinate), 2));
+    return sqrt(std::pow(xDistanceTo(coordinates), 2) +
+                std::pow(yDistanceTo(coordinates), 2));
 }
 
-WumpusWorld::Coordinate WumpusWorld::Coordinate::operator-(WumpusWorld::Coordinate const &coordinate) const
+WumpusWorld::Coordinates WumpusWorld::Coordinates::operator+(WumpusWorld::Coordinates const &coordinates) const
 {
-    return Coordinate(xDifference(coordinate), yDifference(coordinate));
+    return WumpusWorld::Coordinates(x + coordinates.x, y + coordinates.y);
 }
 
-bool WumpusWorld::Coordinate::operator==(Coordinate const &coordinate) const
+WumpusWorld::Coordinates WumpusWorld::Coordinates::operator-(WumpusWorld::Coordinates const &coordinates) const
 {
-    return x == coordinate.x && y == coordinate.y;
+    return WumpusWorld::Coordinates(x - coordinates.x, y - coordinates.y);
 }
 
-bool WumpusWorld::Coordinate::operator!=(Coordinate const &coordinate) const
+bool WumpusWorld::Coordinates::operator==(Coordinates const &coordinates) const
 {
-    return x != coordinate.x || y != coordinate.y;
+    return x == coordinates.x && y == coordinates.y;
 }
 
-WumpusWorld::Coordinate WumpusWorld::Coordinate::Dereference(int const size, int const coordinates)
+bool WumpusWorld::Coordinates::operator!=(Coordinates const &coordinates) const
 {
-    return WumpusWorld::Coordinate(coordinates % size, coordinates / size);
+    return x != coordinates.x || y != coordinates.y;
 }
 
-int WumpusWorld::Coordinate::Reference(int const size, WumpusWorld::Coordinate const coordinates)
+WumpusWorld::Coordinates WumpusWorld::Coordinates::Dereference(WumpusWorld::Coordinates::Domain const size, WumpusWorld::Coordinates::Domain const coordinates)
+{
+    return WumpusWorld::Coordinates(coordinates % size, coordinates / size);
+}
+
+WumpusWorld::Coordinates::Domain WumpusWorld::Coordinates::Reference(WumpusWorld::Coordinates::Domain const size, WumpusWorld::Coordinates const coordinates)
 {
     return coordinates.x + (size * coordinates.y);
 }
 
-WumpusWorld::Coordinate::Coordinate(int const x, int const y)
-{
-    this->x = x;
-    this->y = y;
-}
+WumpusWorld::Coordinates::Coordinates(WumpusWorld::Coordinates::Domain const x, WumpusWorld::Coordinates::Domain const y):
+x(x), y(y)
+{}
 
 
 // ================================================================
@@ -85,7 +88,7 @@ bool WumpusWorld::Configuration::valid() const
 
     if (orientation < North || orientation > NorthWest) return false;
 
-    for (int const pitLocation : pits)
+    for (WumpusWorld::Coordinates::Domain const pitLocation : pits)
     {
         if (pitLocation >= locationLimit) return false;
     }
@@ -99,7 +102,8 @@ bool WumpusWorld::Configuration::valid() const
 
 WumpusWorld::Configuration::Configuration(std::fstream &file)
 {
-    if (!file.good()) {
+    if (!file.good())
+    {
         std::cout << "Bad input file or not found..." << std::endl;
         return;
     }
@@ -107,64 +111,66 @@ WumpusWorld::Configuration::Configuration(std::fstream &file)
     std::string line;
     
     
-    // First line is size
+    // Configuration file's first line is world size.
     std::getline(file, line);
     std::stringstream boardSize(line);
     boardSize >> size;
     
     
-    // Second is entry point
+    // Configuration file's second line is agent entry point.
     std::getline(file, line);
     std::stringstream startInfo(line);
-    int startX, startY;
+    WumpusWorld::Coordinates::Domain startX, startY;
     startInfo >> startX >> startY;
-    entry = WumpusWorld::Coordinate::Reference(size, WumpusWorld::Coordinate(startX, startY));
+
+    entry = WumpusWorld::Coordinates::Reference(size, WumpusWorld::Coordinates(startX, startY));
     
     
-    // Third is the orientation
+    // Configuration file's third line is agent orientation.
     std::getline(file, line);
     std::stringstream orientationInfo(line);
     int orientation;
     orientationInfo >> orientation;
+
     this->orientation = static_cast<WumpusWorld::Orientation>(orientation);
     
     
-    // Fourth is pits' location
+    // Configuration file's fourth line is pits' location.
     std::getline(file, line);
     std::stringstream pitInfo(line);
     
-    while (pitInfo.good() && pitInfo.peek() != '\r') {
-        int pitX, pitY;
-        
+    while (pitInfo.good() && pitInfo.peek() != '\r')
+    {
+        WumpusWorld::Coordinates::Domain pitX, pitY;
         pitInfo >> pitX >> pitY;
-        
-        pits.push_back(WumpusWorld::Coordinate::Reference(size, WumpusWorld::Coordinate(pitX, pitY)));
+
+        pits.push_back(WumpusWorld::Coordinates::Reference(size, WumpusWorld::Coordinates(pitX, pitY)));
     }
-    
-    // Fifth line is gold's location
+
+
+    // Fifth line is gold's location.
     std::getline(file, line);
     std::stringstream goldInfo(line);
-    int goldX, goldY;
+    WumpusWorld::Coordinates::Domain goldX, goldY;
     goldInfo >> goldX >> goldY;
-    gold = WumpusWorld::Coordinate::Reference(size, WumpusWorld::Coordinate(goldX, goldY));
-    
-    // Sixth line is wumpus
+
+    gold = WumpusWorld::Coordinates::Reference(size, WumpusWorld::Coordinates(goldX, goldY));
+
+
+    // Sixth line is wumpus' location.
     std::getline(file, line);
     std::stringstream wumpusInfo(line);
-    int wumpusX, wumpusY;
+    WumpusWorld::Coordinates::Domain wumpusX, wumpusY;
     wumpusInfo >> wumpusX >> wumpusY;
-    wumpus = WumpusWorld::Coordinate::Reference(size, WumpusWorld::Coordinate(wumpusX, wumpusY));
-}
 
-WumpusWorld::Configuration::~Configuration()
-{
-    
+    wumpus = WumpusWorld::Coordinates::Reference(size, WumpusWorld::Coordinates(wumpusX, wumpusY));
 }
 
 
 // ================================================================
 #pragma mark - Inventory Implementation
 // ================================================================
+// The following constant avoids a hideous switch statement.
 std::vector<std::string> const WumpusWorld::Inventory::ItemIdentiy({
     "Air",
     "Bow",
@@ -173,15 +179,15 @@ std::vector<std::string> const WumpusWorld::Inventory::ItemIdentiy({
 
 std::istream& operator>>(std::istream& is, WumpusWorld::Inventory &inventory)
 {
-    // Implement later
+    // Implement later...
     return is;
 }
 
 std::ostream& operator<<(std::ostream& os, WumpusWorld::Inventory const &inventory)
 {
-    for (std::pair<const WumpusWorld::Inventory::Item, int> const &items : inventory._items)
+    for (std::pair<const WumpusWorld::Inventory::Item, unsigned long> const &items : inventory._items)
     {
-        for (int i = 0; i < items.second; i++)
+        for (unsigned long i = 0; i < items.second; i++)
         {
             os << WumpusWorld::Inventory::ItemIdentiy[items.first] << " ";
         }
@@ -201,7 +207,7 @@ bool WumpusWorld::Inventory::push(WumpusWorld::Inventory::Item const item)
 
 WumpusWorld::Inventory::Item WumpusWorld::Inventory::pop(WumpusWorld::Inventory::Item const item)
 {
-    if (empty() || item == Air || !contains(item)) return Air;
+    if (item == Air || !contains(item)) return Air;
 
     _items[item]--;
     _itemCount--;
@@ -227,7 +233,7 @@ int WumpusWorld::Inventory::size() const
     return _itemCount;
 }
 
-int WumpusWorld::Inventory::limit() const
+int WumpusWorld::Inventory::capacity() const
 {
     return _itemCapacity;
 }
@@ -292,9 +298,9 @@ WumpusWorld::Chamber* WumpusWorld::Chamber::passage(WumpusWorld::Orientation con
     return _world->passage(this, orientation);
 }
 
-WumpusWorld::Coordinate WumpusWorld::Chamber::coordinate() const
+WumpusWorld::Coordinates WumpusWorld::Chamber::coordinates() const
 {
-    return WumpusWorld::Coordinate::Dereference(_world->size(), location());
+    return WumpusWorld::Coordinates::Dereference(_world->size(), location());
 }
 
 int WumpusWorld::Chamber::location() const
@@ -304,16 +310,17 @@ int WumpusWorld::Chamber::location() const
 
 float WumpusWorld::Chamber::distanceTo(WumpusWorld::Chamber const *chamber) const
 {
-    WumpusWorld::Coordinate thisCoordinate(WumpusWorld::Coordinate::Dereference(_world->size(), this->location()));
-    WumpusWorld::Coordinate thatCoordinate(WumpusWorld::Coordinate::Dereference(_world->size(), chamber->location()));
+    WumpusWorld::Coordinates thisCoordinate(WumpusWorld::Coordinates::Dereference(_world->size(), this->location()));
+    WumpusWorld::Coordinates thatCoordinate(WumpusWorld::Coordinates::Dereference(_world->size(), chamber->location()));
     return thisCoordinate.distanceTo(thatCoordinate);
 }
 
-int WumpusWorld::Chamber::eightDistanceTo(Chamber const *chamber) const
+WumpusWorld::Coordinates::Domain WumpusWorld::Chamber::eightDistanceTo(Chamber const *chamber) const
 {
-    WumpusWorld::Coordinate thisCoordinate(WumpusWorld::Coordinate::Dereference(_world->size(), this->location()));
-    WumpusWorld::Coordinate thatCoordinate(WumpusWorld::Coordinate::Dereference(_world->size(), chamber->location()));
-    WumpusWorld::Coordinate change = thisCoordinate - thatCoordinate;
+    WumpusWorld::Coordinates thisCoordinate(WumpusWorld::Coordinates::Dereference(_world->size(), this->location()));
+    WumpusWorld::Coordinates thatCoordinate(WumpusWorld::Coordinates::Dereference(_world->size(), chamber->location()));
+    WumpusWorld::Coordinates change = thisCoordinate - thatCoordinate;
+
     return std::max(std::abs(change.x), std::abs(change.y));
 }
 
@@ -418,12 +425,12 @@ WumpusWorld::Chamber::~Chamber()
 // ================================================================
 #pragma mark - Player Configuration Implementation
 // ================================================================
-WumpusWorld::Player::Configuration::Configuration(std::string const identification,
+WumpusWorld::Agent::Configuration::Configuration(std::string const identification,
                                                   int const space,
                                                   int const cost,
                                                   int const turnCost,
-                                                  Orientation const orientation,
-                                                  int const location
+                                                  WumpusWorld::Orientation const orientation,
+                                                  WumpusWorld::Coordinates::Domain const location
                                                   ):
 identification(identification),
 space(space),
@@ -438,7 +445,7 @@ location(location)
 // ================================================================
 #pragma mark - Player Implementation
 // ================================================================
-std::istream& operator>>(std::istream& is, WumpusWorld::Player &player)
+std::istream& operator>>(std::istream& is, WumpusWorld::Agent &agent)
 {
 //    // If cin is being used for input, output some help text
 //    if (&is == &std::cin) {
@@ -456,31 +463,31 @@ std::istream& operator>>(std::istream& is, WumpusWorld::Player &player)
     
     switch (action.c_str()[0]) {
         case 'F':
-            player.forward();
+            agent.forward();
             break;
             
         case 'R':
-            player.turn(WumpusWorld::Player::Right);
+            agent.turn(WumpusWorld::Agent::Right);
             break;
 
         case 'L':
-            player.turn(WumpusWorld::Player::Left);
+            agent.turn(WumpusWorld::Agent::Left);
             break;
             
         case 'D':
-            player.drop();
+            agent.drop();
             break;
             
         case 'G':
-            player.grab();
+            agent.grab();
             break;
             
         case 'S':
-            player.shoot();
+            agent.shoot();
             break;
         
         case 'C':
-            player.climb();
+            agent.climb();
             break;
             
         default:
@@ -491,18 +498,18 @@ std::istream& operator>>(std::istream& is, WumpusWorld::Player &player)
     return is;
 }
 
-std::ostream& operator<<(std::ostream& os, WumpusWorld::Player const &player)
+std::ostream& operator<<(std::ostream& os, WumpusWorld::Agent const &agent)
 {
     char pointer[8] = {'^', '/', '>', '\\', 'v', '/', '<', '\\'};
-    os << pointer[player.orientation()];
+    os << pointer[agent.orientation()];
     
     std::string label[8] = {"N", "NE", "E", "SE", "S", "SW", "W", "NW"};
-    os << " (" << label[player.orientation()] << ")";
+    os << " (" << label[agent.orientation()] << ")";
     
     return os;
 }
 
-std::string WumpusWorld::Player::Sensory(WumpusWorld::Chamber::Percept percept)
+std::string WumpusWorld::Agent::Sensory(WumpusWorld::Chamber::Percept percept)
 {
     std::string output;
     
@@ -531,12 +538,12 @@ std::string WumpusWorld::Player::Sensory(WumpusWorld::Chamber::Percept percept)
     return output;
 }
 
-std::string WumpusWorld::Player::identification() const
+std::string WumpusWorld::Agent::identification() const
 {
     return _configuration.identification;
 }
 
-WumpusWorld::Chamber::Percept WumpusWorld::Player::sense() const
+WumpusWorld::Chamber::Percept WumpusWorld::Agent::sense() const
 {
     WumpusWorld::Chamber::Percept bump = _bump? WumpusWorld::Chamber::Bump : WumpusWorld::Chamber::Nothing;
     WumpusWorld::Chamber::Percept scream = _scream? WumpusWorld::Chamber::Scream : WumpusWorld::Chamber::Nothing;
@@ -544,27 +551,27 @@ WumpusWorld::Chamber::Percept WumpusWorld::Player::sense() const
     return static_cast<WumpusWorld::Chamber::Percept>((inChamber()? _chamber->environment() : 0) | bump | scream);
 }
 
-WumpusWorld::Inventory WumpusWorld::Player::inventory() const
+WumpusWorld::Inventory WumpusWorld::Agent::inventory() const
 {
     return _inventory;
 }
 
-int WumpusWorld::Player::score() const
+int WumpusWorld::Agent::score() const
 {
     return _score;
 }
 
-int WumpusWorld::Player::location() const
+WumpusWorld::Coordinates::Domain WumpusWorld::Agent::location() const
 {
     return _chamber->location();
 }
 
-WumpusWorld::Orientation WumpusWorld::Player::orientation() const
+WumpusWorld::Orientation WumpusWorld::Agent::orientation() const
 {
     return _configuration.orientation;
 }
 
-WumpusWorld::Orientation WumpusWorld::Player::turn(WumpusWorld::Player::Side const side)
+WumpusWorld::Orientation WumpusWorld::Agent::turn(WumpusWorld::Agent::Side const side)
 {
     // If can't afford action, skip it
     if (!_prepareForActionWithCost(_configuration.turnCost))
@@ -587,7 +594,7 @@ WumpusWorld::Orientation WumpusWorld::Player::turn(WumpusWorld::Player::Side con
     return orientation();
 }
 
-void WumpusWorld::Player::forward()
+void WumpusWorld::Agent::forward()
 {
     // If can't afford action, skip it
     if (!_prepareForActionWithCost()) return;
@@ -595,7 +602,7 @@ void WumpusWorld::Player::forward()
     _bump = !enter(_chamber->passage(orientation()));
 }
 
-void WumpusWorld::Player::shoot()
+void WumpusWorld::Agent::shoot()
 {
     // Deduct 10 points, reguardless of whether the arrow hit or not,
     // but skip the actual action if it can't be afforded...
@@ -614,7 +621,7 @@ void WumpusWorld::Player::shoot()
     }
 }
 
-void WumpusWorld::Player::grab()
+void WumpusWorld::Agent::grab()
 {
     // If can't afford action, skip it
     if (!_prepareForActionWithCost()) return;
@@ -634,47 +641,47 @@ void WumpusWorld::Player::grab()
         _inventory.push(_chamber->inventory.pop());
 }
 
-void WumpusWorld::Player::drop()
+void WumpusWorld::Agent::drop()
 {
     // If can't afford action, skip it
     if (!_prepareForActionWithCost()) return;
 
-    // Drop an item from player's inventory to the chamber's inventory.
+    // Drop an item from agent's inventory to the chamber's inventory.
     // NOTICE: "Air" is returned if inventory's empty, and it's not stored.
     _dropped = _inventory.pop();
     _chamber->inventory.push(_dropped);
 }
 
-void WumpusWorld::Player::climb()
+void WumpusWorld::Agent::climb()
 {
     // If can't afford action, skip it
     if (!_prepareForActionWithCost()) return;
     
-    // Check that the player can exit the cave
+    // Check that the agent can exit the cave
     if (_chamber->contains(Chamber::Feature::Exit)) {
-        // If the player is holding the gold, add 1000 points
+        // If the agent is holding the gold, add 1000 points
         _addPoints(_inventory.contains(Inventory::Item::Gold)? 1000 : 0);
         _finished = true;
     }
 }
 
-void WumpusWorld::Player::orient(Orientation const orientation)
+void WumpusWorld::Agent::orient(Orientation const orientation)
 {
     _prepareForActionWithCost((orientation - this->orientation()) * _configuration.turnCost);
     _configuration.orientation = orientation;
 }
 
-WumpusWorld::Chamber *WumpusWorld::Player::chamber() const
+WumpusWorld::Chamber *WumpusWorld::Agent::chamber() const
 {
     return _chamber;
 }
 
-bool WumpusWorld::Player::inChamber() const
+bool WumpusWorld::Agent::inChamber() const
 {
     return chamber() != nullptr; //&& !_chamber->contains(WumpusWorld::Chamber::Feature::Exit);
 }
 
-bool WumpusWorld::Player::enter(WumpusWorld::Chamber* chamber)
+bool WumpusWorld::Agent::enter(WumpusWorld::Chamber* chamber)
 {
     if (!chamber || !_isNeighbor(chamber)) return false;
     
@@ -686,31 +693,31 @@ bool WumpusWorld::Player::enter(WumpusWorld::Chamber* chamber)
         _deductPoints(1000);
     }
     
-    return static_cast<bool>(_chamber = chamber);
+    return static_cast<bool>((_chamber = chamber));
 }
 
-bool WumpusWorld::Player::alive() const
+bool WumpusWorld::Agent::alive() const
 {
     return _health > 0;
 }
 
-bool WumpusWorld::Player::finished() const
+bool WumpusWorld::Agent::finished() const
 {
     return !alive() || !inChamber() || _finished;
 }
 
-WumpusWorld::Player::Configuration WumpusWorld::Player::nextMove()
+WumpusWorld::Agent::Configuration WumpusWorld::Agent::nextMove()
 {
     std::cin >> *this;
     return _configuration;
 }
 
-int WumpusWorld::Player::_damage(int const damage)
+int WumpusWorld::Agent::_damage(int const damage)
 {
     return _health += damage > 0? -damage : damage;
 }
 
-bool WumpusWorld::Player::_isNeighbor(WumpusWorld::Chamber const *chamber) const
+bool WumpusWorld::Agent::_isNeighbor(WumpusWorld::Chamber const *chamber) const
 {
     // If it's not in a chamber, assume it is a neighbor.
     if (!inChamber()) return true;
@@ -724,22 +731,22 @@ bool WumpusWorld::Player::_isNeighbor(WumpusWorld::Chamber const *chamber) const
     return false;
 }
 
-int WumpusWorld::Player::_deductPoints(int const points)
+int WumpusWorld::Agent::_deductPoints(int const points)
 {
     return _score -= points;
 }
 
-int WumpusWorld::Player::_addPoints(int const points)
+int WumpusWorld::Agent::_addPoints(int const points)
 {
     return _score += points;
 }
 
-void WumpusWorld::Player::_clearPercepts()
+void WumpusWorld::Agent::_clearPercepts()
 {
     _scream = _bump = false;
 }
 
-bool WumpusWorld::Player::_prepareForActionWithCost(int const tax)
+bool WumpusWorld::Agent::_prepareForActionWithCost(int const tax)
 {
     if (!inChamber()) return false;
     
@@ -749,7 +756,7 @@ bool WumpusWorld::Player::_prepareForActionWithCost(int const tax)
     return true;
 }
 
-WumpusWorld::Player::Player(WumpusWorld::Player::Configuration const configuration):
+WumpusWorld::Agent::Agent(WumpusWorld::Agent::Configuration const configuration):
 _configuration(configuration),
 _inventory(configuration.space),
 _chamber(nullptr),
@@ -765,7 +772,7 @@ _finished(false)
     _inventory.push(WumpusWorld::Inventory::Item::Bow);
 }
 
-WumpusWorld::Player::~Player()
+WumpusWorld::Agent::~Agent()
 {
     
 }
@@ -850,21 +857,21 @@ WumpusWorld::Chamber* WumpusWorld::goldChamber() const
 
 bool WumpusWorld::playable() const
 {
-    // If at least one player can play, then keep the world turning!
-    for (WumpusWorld::Player const * const aPlayer : _player) {
+    // If at least one agent can play, then keep the world turning!
+    for (WumpusWorld::Agent const * const aPlayer : _agent) {
         if (!aPlayer->finished() && aPlayer->alive()) return true;
     }
     return false;
 }
 
-void WumpusWorld::addPlayer(Player * const player)
+void WumpusWorld::addAgent(Agent * const agent)
 {
-    _player.push_back(player);
+    _agent.push_back(agent);
     
-    // Note: The player must be oriented BEFORE entering the world,
+    // Note: The agent must be oriented BEFORE entering the world,
     // otherwise his actions will begin to count against him/her.
-    player->orient(_defaultOrientation);
-    player->enter(_chamber[_defaultChamber]);
+    agent->orient(_defaultOrientation);
+    agent->enter(_chamber[_defaultChamber]);
 }
 
 int WumpusWorld::size() const
@@ -902,37 +909,42 @@ WumpusWorld::Edge WumpusWorld::_edge(int const position) const
 }
 
 void WumpusWorld::_processRound() {
-    for (std::vector<Player*>::size_type i = 0; i < _player.size(); i++) {
-        if (!_player[i]->finished()) _processPlayer(i);
+    for (std::vector<Agent*>::size_type i = 0; i < _agent.size(); i++) {
+        if (!_agent[i]->finished()) _processPlayer(i);
     }
 }
 
-void WumpusWorld::_processPlayer(std::vector<Player*>::size_type const i)
+void WumpusWorld::_processPlayer(std::vector<Agent*>::size_type const i)
 {
-    _player[i]->nextMove();
+    _agent[i]->nextMove();
 }
 
 WumpusWorld::WumpusWorld(WumpusWorld::Configuration const configuration):
 _defaultOrientation(WumpusWorld::Orientation::North),
 _defaultChamber(0)
 {
+    // Generate enough features for each chamber in the world (size^2).
     std::vector<WumpusWorld::Chamber::Feature> feature(std::pow(configuration.size, 2));
-    
+
+    // Set entry and wumpus feature to corresponding chambers' feature set.
     feature[configuration.entry]    = WumpusWorld::Chamber::Feature::Exit;
     feature[configuration.wumpus]   = WumpusWorld::Chamber::Feature::LivingWumpus;
-    
-    for (int const &pit : configuration.pits) {
+
+    // Set pit feature for all specified chambers, adding to existing features.
+    for (WumpusWorld::Coordinates::Domain const &pit : configuration.pits)
+    {
         feature[pit] = static_cast<WumpusWorld::Chamber::Feature>(feature[pit] | WumpusWorld::Chamber::Feature::Pit);
     }
     
-    for (std::vector<WumpusWorld::Chamber::Feature>::size_type i = 0; i < feature.size(); i++) {
+    for (std::vector<WumpusWorld::Chamber::Feature>::size_type i = 0; i < feature.size(); i++)
+    {
         _chamber.push_back(new WumpusWorld::Chamber(this, feature[i]));
     }
     
     _chamber[configuration.gold]->inventory.push(WumpusWorld::Inventory::Item::Gold);
     
-//    for (WumpusWorld::Player *aPlayer : _player) {
-//        // Note: The player must be oriented BEFORE entering the world,
+//    for (WumpusWorld::Player *aPlayer : _agent) {
+//        // Note: The agent must be oriented BEFORE entering the world,
 //        // otherwise his actions will begin to count against him/her.
 //        aPlayer->orient(configuration.orientation);
 //        aPlayer->enter(_chamber[configuration.entry]);

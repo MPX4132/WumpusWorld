@@ -14,7 +14,7 @@ std::default_random_engine ACOPlayer::Ant::Randomizer = std::default_random_engi
 // ================================================================
 #pragma mark - Player Overwritten Implementation
 // ================================================================
-WumpusWorld::Player::Configuration ACOPlayer::nextMove()
+WumpusWorld::Agent::Configuration ACOPlayer::nextMove()
 {
     // If we're at the gold chamber, grab it and finish.
     if (chamber()->contains(WumpusWorld::Chamber::Percept::Glitter)) {
@@ -266,7 +266,7 @@ _edges(ant._edges), _start(ant._start), _end(ant._end)
 #pragma mark - ACOPlayer Implementation
 // ================================================================
 ACOPlayer::ACOPlayer(Configuration const configuration, WumpusWorld::Chamber *const destination):
-WumpusWorld::Player(configuration),
+WumpusWorld::Agent(configuration),
 _destination(destination)
 {}
 

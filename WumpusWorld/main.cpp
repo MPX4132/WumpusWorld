@@ -44,11 +44,11 @@ int main(int argc, const char * argv[]) {
     world.goldChamber()->inventory.push(WumpusWorld::Inventory::Item::Gold);
 
     // Create and insert the player into the world.
-    AStarPlayer player1(WumpusWorld::Player::Configuration("A-*"), world.goldChamber());
-    ACOPlayer player2(WumpusWorld::Player::Configuration("ACO"), world.goldChamber());
+    AStarPlayer agent1(WumpusWorld::Agent::Configuration("A-*"), world.goldChamber());
+    ACOPlayer agent2(WumpusWorld::Agent::Configuration("ACO"), world.goldChamber());
 
-    world.addPlayer(&player1);
-    world.addPlayer(&player2);
+    world.addAgent(&agent1);
+    world.addAgent(&agent2);
 
     world.run();
 

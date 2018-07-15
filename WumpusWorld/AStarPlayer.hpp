@@ -17,7 +17,7 @@
 // an optimized approach to getting to a destination. It essentially
 // overwrites a virtual method in the base class that's called
 // when it's the player's time to make its next move.
-class AStarPlayer : public WumpusWorld::Player {
+class AStarPlayer : public WumpusWorld::Agent {
 protected:
 
     // This class serves as a special queue designed specifically to deal with

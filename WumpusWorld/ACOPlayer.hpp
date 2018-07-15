@@ -23,7 +23,7 @@
 // the ant colony optimization algorithm for a valid path to the gold.
 // The class overwrites a virtual method in the base class that is
 // called when it's the player's time to make its next move.
-class ACOPlayer : public WumpusWorld::Player {
+class ACOPlayer : public WumpusWorld::Agent {
 public:
 
     static const int Generations    = 1000;
